@@ -5,7 +5,7 @@
 #include "linkedlist.h"
 
 typedef struct Automata{
-    int cantSimbolos; 
+    int cantSimbolos;
     int cantEstados;
     int cantFinales;
     int estados[MAX];       // Estados son numeros
@@ -17,7 +17,11 @@ typedef struct Automata{
 
 Automata crearAutomata(int cantSimbolos, char simbolos[],int cantEstados, int estados[], int estadoInicial, int cantFinales, const int finales[]);
 
-void añadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int estadoHacia );
+void añadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int estadoHacia);
+
+void pertenece(Automata aut, char cadena[], int n);
+
+int ir(Automata aut, int aux, char simbolo);
 
 int indiceEstado(Automata aut, int estado);
 

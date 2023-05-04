@@ -44,6 +44,34 @@ void añadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int esta
     }
 }
 
+void pertenece(Automata aut, char cadena[], int n){
+    int indiceEstadoInicial = indiceEstado(aut, aut.estadoInicial);
+    int indicePrimerSimbolo = indiceSimbolo(aut, cadena[0]);
+    int aceptada = 0;
+    if (aut.delta[indiceEstadoInicial][indicePrimerSimbolo].head != NULL){          //si desde el estado inicial por el primer simbolo voy a algun estado
+        int aux = aut.delta[indiceEstadoInicial][indicePrimerSimbolo].head->info;   //aux es un estado
+        for (int i = 1; i < n; i++){
+            aux = ir(aut, aux, cadena[i]);                                          //consumo toda la cadena
+        }
+        for (int j = 0; j < aut.cantFinales; j++){
+            if (aux == aut.finales[j]){                                             //chequeo si llegue a un estado final
+                aceptada = 1;
+            }
+        }
+    }
+    if(aceptada == 1){
+        printf("Cadena aceptada por el automata");
+    }else{
+        printf("Cadena no aceptada por el automata");
+    }
+}
+
+int ir(Automata aut, int aux, char c){
+    int indiceAux = indiceEstado(aut, aux);
+    int indiceSim = indiceSimbolo(aut, c);
+    return aut.delta[indiceAux][indiceSim].head->info;
+}
+
 int indiceEstado(Automata aut, int estado){
     for(int i = 0; i < aut.cantEstados; i++){
         if(aut.estados[i] == estado){
