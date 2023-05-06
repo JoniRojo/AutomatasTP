@@ -67,6 +67,12 @@ build CMakeFiles/tp.dir/linkedlist.c.o: C_COMPILER__tp_Debug /home/jona/Escritor
   OBJECT_DIR = CMakeFiles/tp.dir
   OBJECT_FILE_DIR = CMakeFiles/tp.dir
 
+build CMakeFiles/tp.dir/arreglo.c.o: C_COMPILER__tp_Debug /home/jona/Escritorio/Universidad/4toanio/Automatas/tp/arreglo.c || cmake_object_order_depends_target_tp
+  DEP_FILE = CMakeFiles/tp.dir/arreglo.c.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/tp.dir
+  OBJECT_FILE_DIR = CMakeFiles/tp.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target tp
@@ -75,7 +81,7 @@ build CMakeFiles/tp.dir/linkedlist.c.o: C_COMPILER__tp_Debug /home/jona/Escritor
 #############################################
 # Link the executable tp
 
-build tp: C_EXECUTABLE_LINKER__tp_Debug CMakeFiles/tp.dir/automata.c.o CMakeFiles/tp.dir/main.c.o CMakeFiles/tp.dir/linkedlist.c.o
+build tp: C_EXECUTABLE_LINKER__tp_Debug CMakeFiles/tp.dir/automata.c.o CMakeFiles/tp.dir/main.c.o CMakeFiles/tp.dir/linkedlist.c.o CMakeFiles/tp.dir/arreglo.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/tp.dir
   POST_BUILD = :

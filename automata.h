@@ -3,25 +3,27 @@
 #define MAX 500
 
 #include "linkedlist.h"
+#include "arreglo.h"
 
 typedef struct Automata{
-    int cantSimbolos;
-    int cantEstados;
-    int cantFinales;
-    int estados[MAX];       // Estados son numeros
-    char simbolos[MAX];     // Simbolos del alfabeto son caracteres
-    List delta[MAX][MAX];   // Filas son estados, columnas son simbolos, cada elemento de la matriz es una lista
-    int finales[MAX];
+    ArregloEnt estados;       // Estados son numeros
+    ArregloChar simbolos;     // Simbolos del alfabeto son caracteres
+    ListEnt delta[MAX][MAX];   // Filas son estados, columnas son simbolos, cada elemento de la matriz es una lista
+    ArregloEnt finales;
     int estadoInicial;
 }Automata;
 
-Automata crearAutomata(int cantSimbolos, char simbolos[],int cantEstados, int estados[], int estadoInicial, int cantFinales, const int finales[]);
+Automata crearAutomata(ArregloChar simbolos, ArregloEnt estados, int estadoInicial, ArregloEnt finales);
 
 void añadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int estadoHacia);
 
 void pertenece(Automata aut, char cadena[], int n);
 
 int ir(Automata aut, int aux, char simbolo);
+
+ListEnt clausuraLambda(Automata aut, ArregloEnt estados);
+
+ListEnt mover(Automata aut, ArregloEnt estados, char simbolo);
 
 int indiceEstado(Automata aut, int estado);
 

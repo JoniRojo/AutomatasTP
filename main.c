@@ -4,15 +4,25 @@
 #include "automata.h"
 
 int main(){
-    int cantidadSimbolos = 3;
-    char alfabeto[] = {'z', 'a', 'b'};
-    int cantidadEstados = 3;
-    int estados[] = {1, 2, 3};
-    int inicial = 1;
-    int cantidadFinales = 1;
-    int finales[] = {3};
+    ListChar listaAlfabeto;
+    insertarChar(&listaAlfabeto, 'z');
+    insertarChar(&listaAlfabeto, 'a');
+    insertarChar(&listaAlfabeto, 'b');
+    ArregloChar alfabeto = listCharToArray(&listaAlfabeto);
 
-    Automata a = crearAutomata(cantidadSimbolos, alfabeto, cantidadEstados, estados, inicial, cantidadFinales, finales);
+    ListEnt listaEstados;
+    insertarEnt(&listaEstados, 1);
+    insertarEnt(&listaEstados, 2);
+    insertarEnt(&listaEstados, 3);
+    ArregloEnt estados = listEntToArray(&listaEstados);
+
+    int inicial = 1;
+
+    ListEnt listaFinales;
+    insertarEnt(&listaFinales,3);
+    ArregloEnt finales = listEntToArray(&listaFinales);
+
+    Automata a = crearAutomata( alfabeto, estados, inicial, finales);
 
     /* Ejemplo AF 1
     añadirTransicion(&a,1,'z',2);
@@ -31,7 +41,8 @@ int main(){
 
     mostrarAutomata(a);
 
-    /* Aceptada
+    // Aceptada
+    /*
     char cadena[] = {'a','b', 'b', 'a'};
     int n = 4;
      */

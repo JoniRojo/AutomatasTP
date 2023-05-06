@@ -3,4 +3,4 @@ project(tp)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(tp automata.c automata.h main.c linkedlist.c linkedlist.h)
+add_executable(tp automata.c automata.h main.c linkedlist.c linkedlist.h arreglo.c arreglo.h)
