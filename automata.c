@@ -72,6 +72,10 @@ int ir(Automata aut, int aux, char c){
     return aut.delta[indiceAux][indiceSim].head->info;
 }
 
+Automata AFNDtoAFD(Automata aut){
+    //Implementar
+}
+
 ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
     // recorrer todos los estados de ArregloEnt estados
     // por cada estado recorrer la lista en la matriz[estado[i]][z]
@@ -102,11 +106,49 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
             }
         }
     }
+    ArregloEnt resultArray = listEntToArray(&result);
+    for(int j = 0; j < estados.cant; j++){
+        int esta = 0;
+        for(int k = 0; k < resultArray.cant; k++){
+            if(estados.arreglo[j] == resultArray.arreglo[k]){
+                esta = 1;
+            }
+        }
+        if(esta == 1){
+            insertarEnt(&result,estados.arreglo[j]);
+        }
+    }
     return result;
 }
 
 ListEnt mover(Automata aut, ArregloEnt estados, char simbolo){
-    //Implementar
+    int indiceSimb = indiceSimbolo(aut, simbolo);
+    ListEnt result;
+    result.head = NULL;
+
+    for(int i = 0; i < estados.cant; i++){
+        int indiceEst = indiceEstado(aut, estados.arreglo[i]);
+        NodoEnt *aux = aut.delta[indiceEst][indiceSimb].head;
+        if(aux == NULL){
+            break;
+        } else {
+            while( aux != NULL){
+                NodoEnt *new_node = (NodoEnt *)malloc(sizeof(NodoEnt));
+                new_node->info = aux->info;
+                new_node->next = NULL;
+
+                if (result.head == NULL) {
+                    result.head  = new_node;
+                } else {
+                    NodoEnt *aux2 = result.head;
+                    result.head = new_node;
+                    result.head->next = aux2;
+                }
+                aux = aux->next;
+            }
+        }
+    }
+    return result;
 }
 
 int indiceEstado(Automata aut, int estado){

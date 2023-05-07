@@ -21,6 +21,8 @@ void pertenece(Automata aut, char cadena[], int n);
 
 int ir(Automata aut, int aux, char simbolo);
 
+Automata AFNDtoAFD(Automata aut);
+
 ListEnt clausuraLambda(Automata aut, ArregloEnt estados);
 
 ListEnt mover(Automata aut, ArregloEnt estados, char simbolo);
