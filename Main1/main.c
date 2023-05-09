@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include "automata.h"
+#include "../automata.h"
 
 int main(){
     ListChar listaAlfabeto;
@@ -25,19 +25,19 @@ int main(){
     Automata a = crearAutomata( alfabeto, estados, inicial, finales);
 
     /* Ejemplo AF 1
-    añadirTransicion(&a,1,'z',2);
-    añadirTransicion(&a,1,'a',1);
-    añadirTransicion(&a,1,'b',3);
-    añadirTransicion(&a, 2, 'a', 2);
-    añadirTransicion(&a, 2,'a',3);
-    añadirTransicion(&a, 3, 'b', 2);
+    anadirTransicion(&a,1,'z',2);
+    anadirTransicion(&a,1,'a',1);
+    anadirTransicion(&a,1,'b',3);
+    anadirTransicion(&a, 2, 'a', 2);
+    anadirTransicion(&a, 2,'a',3);
+    anadirTransicion(&a, 3, 'b', 2);
     */
 
     // Ejemplo AF 2
-    añadirTransicion(&a,1,'a',1);
-    añadirTransicion(&a,1,'b',3);
-    añadirTransicion(&a, 2, 'a', 3);
-    añadirTransicion(&a, 3, 'b', 2);
+    anadirTransicion(&a,1,'a',1);
+    anadirTransicion(&a,1,'b',3);
+    anadirTransicion(&a, 2, 'a', 3);
+    anadirTransicion(&a, 3, 'b', 2);
 
     mostrarAutomata(a);
 
