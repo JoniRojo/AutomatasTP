@@ -31,6 +31,21 @@ void insertarChar(ListChar *list, char c){
     }
 }
 
+
+void insertarArr(ListOfArraysEnt *list, ArregloEnt info){
+    NodoArr *new_node = (NodoArr *)malloc(sizeof(NodoArr));
+    new_node->arreglo = info;
+    new_node->next = NULL;
+
+    if (list->head == NULL) {
+        list->head = new_node;
+    } else {
+        NodoArr *aux = list->head;
+        list->head  = new_node;
+        list->head->next = aux;
+    }
+}
+
 ArregloEnt listEntToArray(ListEnt *list){
     NodoEnt *aux = list->head;
     ArregloEnt array;
@@ -47,6 +62,14 @@ ArregloEnt listEntToArray(ListEnt *list){
         }
         return array;
     }
+}
+
+ListEnt ArrayToListEnt(ArregloEnt arreglo){
+    ListEnt result;
+    for(int i = 0; i < arreglo.cant; i++){
+        insertarEnt(&result, arreglo.arreglo[i]);
+    }
+    return result;
 }
 
 ArregloChar listCharToArray(ListChar *list){
@@ -66,6 +89,40 @@ ArregloChar listCharToArray(ListChar *list){
         return array;
     }
 }
+
+int contenidoEstricto(ListEnt A, ListEnt B){
+    ArregloEnt arrA = listEntToArray(&A);
+    ArregloEnt arrB = listEntToArray(&B);
+
+    for(int i = 0; i < arrA.cant; i++){
+        int esta = 0;
+        for(int j = 0; j < arrB.cant; j++){
+            if( arrA.arreglo[i] == arrB.arreglo[j]){
+                esta = 1;
+                break;
+            }
+        }
+        if (esta == 0){
+            return 0;
+        }
+    }
+    return 1;
+}
+/*
+int sizeListOfArraysEnt(ListOfArraysEnt list){
+    NodoArr *aux = list.head;
+    int cant = 0;
+    if(aux == NULL){
+        return 0;
+    } else {
+        while( aux != NULL){
+            cant++;
+            aux = aux->next;
+        }
+        return cant;
+    }
+}
+*/
 
 /*
 void crear(Nodo **list){

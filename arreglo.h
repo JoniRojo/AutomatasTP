@@ -9,7 +9,7 @@ typedef struct ArregloEnt{
 
 typedef struct ArregloChar{
     char arreglo[MAX];
-    int cant
+    int cant;
 }ArregloChar;
 
 #endif //TP_ARREGLO_H
