@@ -1,3 +1,0 @@
-/home/jona/Escritorio/Universidad/4toanio/Automatas/tp/cmake-build-debug/CMakeFiles/tp.dir
-/home/jona/Escritorio/Universidad/4toanio/Automatas/tp/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jona/Escritorio/Universidad/4toanio/Automatas/tp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
