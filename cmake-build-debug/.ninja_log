@@ -1,0 +1,8 @@
+# ninja log v5
+3	131	1683657816471546453	CMakeFiles/tp.dir/linkedlist.c.o	402d241b08ec6c5d
+25	44	1683658588478587366	tp	838de8a830f08f14
+0	37	1683658879072890472	build.ninja	f8abeaebdc7c23ab
+0	25	1683658588458587383	CMakeFiles/tp.dir/Main1/main.c.o	48097f16eed68e11
+2	20	1683657883861198049	CMakeFiles/tp.dir/arreglo.c.o	fbf2613c4ddc705e
+1	130	1683657816471546453	CMakeFiles/tp.dir/main.c.o	9b19036edef78cf7
+0	48	1683658110247512830	CMakeFiles/tp.dir/automata.c.o	8929831de0f91a5d
