@@ -2,7 +2,6 @@
 #include <malloc.h>
 #include <string.h>
 
-#include "automata.h"
 #include "archivo.c"
 
 int main(){
