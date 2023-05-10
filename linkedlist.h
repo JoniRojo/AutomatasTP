@@ -36,7 +36,8 @@ ListEnt ArrayToListEnt(ArregloEnt arreglo);
 void insertarEnt(ListEnt *list, int info);
 void insertarChar(ListChar *list, char info);
 void insertarArr(ListOfArraysEnt *list, ArregloEnt info);
-int contenida(ListEnt A, ListEnt B);
+int contenido(ListEnt A, ListEnt B);
+int incluye(ListEnt A, ListEnt B);
 //int sizeListOfArraysEnt(ListOfArraysEnt list);
 /*
 void crear(Nodo **list);

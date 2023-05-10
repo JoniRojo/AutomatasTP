@@ -43,6 +43,7 @@ void anadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int estad
         aut->delta[i][j].head  = new_node;
         aut->delta[i][j].head->next = aux;
     }
+    //free(new_node);
 }
 
 void pertenece(Automata aut, char cadena[], int n){
@@ -72,7 +73,7 @@ int ir(Automata aut, int aux, char c){
     int indiceSim = indiceSimbolo(aut, c);
     return aut.delta[indiceAux][indiceSim].head->info;
 }
-/*
+
 Automata AFNDtoAFD(Automata aut){
 
     // Clasura lambda del estado incial = X
@@ -94,12 +95,13 @@ Automata AFNDtoAFD(Automata aut){
     ArregloEnt estadoIncialArr;
     estadoIncialArr.arreglo[0] = aut.estadoInicial;
     estadoIncialArr.cant = 1;
-
     ListEnt clausuraLambdaEstadoInicialL = clausuraLambda(aut, estadoIncialArr);
     ArregloEnt clausuraLambdaEstadoInicialA = listEntToArray(&clausuraLambdaEstadoInicialL);
+
     nuevoInicial = nuevoNombreEstado(clausuraLambdaEstadoInicialA);
 
-    // creo una lista de listas de arreglos, donde cada nodo sera un arreglo de estados, que luego unificare para formar un solo estado para el AFD
+    // creo una lista de listas de arreglos, donde cada nodo sera un arreglo de estados,
+    //  que luego unificare para formar un solo estado para el AFD(nuevoNombre)
     // a esta lista le agrego inicialmente la clausura lambda del estado inicial
 
     ListOfArraysEnt listaEstadosNuevos;
@@ -123,14 +125,14 @@ Automata AFNDtoAFD(Automata aut){
         ListEnt conjuntoNuevo = clausuraLambda(aut, aux2);
         ArregloEnt conjuntoNuevoArr = listEntToArray(&conjuntoNuevo);
 
-        // chequeo si alguno de estos conjuntos de estados esta contenido en mi conjunto de estado inicial
+        // chequeo si alguno de estos conjuntos de estados esta contenido en mi conjunto de la clausura del estado inicial
         // si no esta contenido, lo agrego a la lista estados(del AFD) y lo guardo para procesar luego
-        if(contenida(conjuntoNuevo, clausuraLambdaEstadoInicialL) == 0){
+        if(contenido(conjuntoNuevo, clausuraLambdaEstadoInicialL) == 0){
             insertarArr(&listaEstadosNuevos, conjuntoNuevoArr);
             insertarArr(&listaEstadosAux,conjuntoNuevoArr);
-            // Creo la representacion del nuevo estado
+            // creo la representacion del nuevo estado
             int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
-            //agrego transicion
+            // agrego transicion
             anadirTransicion(&nuevoAut,nuevoInicial, alfabetoSinLambda.arreglo[i], nuevoNum);
         }
     }
@@ -138,11 +140,35 @@ Automata AFNDtoAFD(Automata aut){
     // llamo a cicloNuevosConjuntos, metodo para ciclar buscando conjuntos nuevos
     cicloNuevosConjuntos(aut, &nuevoAut, listaEstadosAux, &listaEstadosNuevos, alfabetoSinLambda);
 
+    // para este punto, ya tenemos el alfabeto, el estado inical y las transiciones...
+    // definimos aquellos estados que son finales
+    NodoArr *pAListaEstados = listaEstadosNuevos.head;
+    while(pAListaEstados != NULL){
+        ListEnt A = ArrayToListEnt(aut.finales);
+        ListEnt B = ArrayToListEnt(pAListaEstados->arreglo);
+        if(incluye(A,B) == 1){
+            int finalNuevo = nuevoNombreEstado(pAListaEstados->arreglo);
+            insertarEnt(&nuevosFinales, finalNuevo);
+        }
+        pAListaEstados = pAListaEstados->next;
+    }
 
+    // ahora queda pasar todos los arreglos de la lista listaEstadosNuevos(ListOfArraysEnt) a su nueva representacion
+    pAListaEstados = listaEstadosNuevos.head;
+    while(pAListaEstados != NULL){
+        int nuevoNom = nuevoNombreEstado(pAListaEstados->arreglo);
+        insertarEnt(&nuevosEstados,nuevoNom);
+        pAListaEstados = pAListaEstados->next;
+    }
+
+    nuevoAut.estados = listEntToArray(&nuevosEstados);
+    nuevoAut.finales = listEntToArray(&nuevosFinales);
+    nuevoAut.estadoInicial = nuevoInicial;
+    return nuevoAut;
 }
 
 
-// listaEstadosResultado es la lista de los estados que finalmente tendre en mi nuevo ADF){
+// listaEstadosResultado es la lista de los estados que finalmente tendre en mi nuevo ADF
 // listaEstadosAIterar es la lista utilizada para almacenar la lista de estados a iterar
 void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt listaEstadosAIterar, ListOfArraysEnt *listaEstadosResultado, ArregloChar alfabetoSinLambda){
     NodoArr *pAlista = listaEstadosAIterar.head;
@@ -157,17 +183,15 @@ void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt list
             ArregloEnt conjuntoNuevoArr = listEntToArray(&conjuntoNuevo);
             while( pAlista2 != NULL){  // por cada estado "ya confirmado" en mi nuevo AFD(listaEstadosResultado)
                 ListEnt conjunto = ArrayToListEnt(pAlista2->arreglo);
-                // chequeo si el conjunto obtenido esta contenido en alguno de mi listaEstadosResultado
-                if(contenida(conjuntoNuevo, conjunto) == 0){
+                // chequeo si el conjunto obtenido no esta contenido en el arreglo actual de listaEstadosResultado
+                if(contenido(conjuntoNuevo, conjunto) == 0){
                     insertarArr(listaEstadosResultado, conjuntoNuevoArr);
                     insertarArr(&listaEstadosAux,conjuntoNuevoArr);
-                    // Creo la representacion del nuevo estado
+                    // Creo la representacion del nuevo estado, y la del estado de listaEstadosResultado
                     int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
+                    int nuevoNum2 = nuevoNombreEstado(pAlista2->arreglo);
                     //agrego transicion
-                    //nuevoIncial no va desde nuevoNum
-                    anadirTransicion(nuevoAut, nuevoNum, alfabetoSinLambda.arreglo[i], nuevoNum);
-                    // buscar desde que conjunto hago la transicion, hacer su representacion o ver si ya la teniamos que tener....
-                    // quizas posible estructura con el estado y su numero nuevo
+                    anadirTransicion(nuevoAut, nuevoNum2, alfabetoSinLambda.arreglo[i], nuevoNum);
                 }
                 pAlista2 = pAlista2->next;
             }
@@ -177,10 +201,12 @@ void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt list
     }
     // si consegui al menos un conjunto nuevo, llamada recursiva
     if(listaEstadosAux.head != NULL){
-        //cicloNuevosConjuntos(aut, listaEstadosAux, listaEstadosResultado, alfabetoSinLambda);
+        cicloNuevosConjuntos(aut, nuevoAut,listaEstadosAux, listaEstadosResultado, alfabetoSinLambda);
     }
+    //free(pAlista);
+    //free(pAlista2);
 }
-*/
+
 /*
  * 4 1000
  * 3 100
@@ -235,6 +261,7 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
                 aux = aux->next;
             }
         }
+        //free(aux);
     }
     ArregloEnt resultArray = listEntToArray(&result);
     for(int j = 0; j < estados.cant; j++){
@@ -277,7 +304,9 @@ ListEnt mover(Automata aut, ArregloEnt estados, char simbolo){
                 aux = aux->next;
             }
         }
+        //free(aux);
     }
+
     return result;
 }
 
@@ -334,6 +363,8 @@ void mostrarAutomata(Automata aut){
                 }
                 printf("\n");
             }
+
         }
     }
+
 }

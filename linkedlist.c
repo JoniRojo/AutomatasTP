@@ -15,6 +15,7 @@ void insertarEnt(ListEnt *list, int info){
         list->head  = new_node;
         list->head->next = aux;
     }
+    free(new_node);
 }
 
 void insertarChar(ListChar *list, char c){
@@ -29,6 +30,7 @@ void insertarChar(ListChar *list, char c){
         list->head  = new_node;
         list->head->next = aux;
     }
+    free(new_node);
 }
 
 
@@ -44,6 +46,7 @@ void insertarArr(ListOfArraysEnt *list, ArregloEnt info){
         list->head  = new_node;
         list->head->next = aux;
     }
+    free(new_node);
 }
 
 ArregloEnt listEntToArray(ListEnt *list){
@@ -88,9 +91,10 @@ ArregloChar listCharToArray(ListChar *list){
         }
         return array;
     }
+    //aca
 }
 
-int contenidoEstricto(ListEnt A, ListEnt B){
+int contenido(ListEnt A, ListEnt B){
     ArregloEnt arrA = listEntToArray(&A);
     ArregloEnt arrB = listEntToArray(&B);
 
@@ -107,6 +111,20 @@ int contenidoEstricto(ListEnt A, ListEnt B){
         }
     }
     return 1;
+}
+
+int incluye(ListEnt A, ListEnt B){
+    ArregloEnt arrA = listEntToArray(&A);
+    ArregloEnt arrB = listEntToArray(&B);
+
+    for(int i = 0; i < arrA.cant; i++){
+        for(int j = 0; j < arrB.cant; j++){
+            if( arrA.arreglo[i] == arrB.arreglo[j]){
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 /*
 int sizeListOfArraysEnt(ListOfArraysEnt list){

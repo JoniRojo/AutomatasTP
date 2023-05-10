@@ -1,6 +1,6 @@
 #ifndef TP_AUTOMATA_H
 #define TP_AUTOMATA_H
-#define MAX 500
+#define MAX 50
 
 #include "linkedlist.h"
 #include "arreglo.h"
