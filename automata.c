@@ -1,8 +1,10 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "automata.h"
 #include "linkedlist.h"
+#include "arreglo.h"
 
 Automata crearAutomata(ArregloChar simbolos, ArregloEnt estados, int estadoInicial, ArregloEnt finales){
     Automata aut;
@@ -358,6 +360,54 @@ int indiceSimbolo(Automata aut, char simbolo){
         }
     }
     return -1;
+}
+
+Automata unionAut(Automata a, Automata b){
+    ArregloEnt nuevosEstados;
+    nuevosEstados = unionArregloEnt(a.estados, b.estados);
+
+    ArregloChar nuevoAlfabeto;
+    nuevoAlfabeto = unionArregloChar(a.simbolos, b.simbolos);
+
+    int nuevoInicial = 100;
+
+    ArregloEnt nuevosFinales;
+    nuevosFinales = unionArregloEnt(a.finales, b.finales);
+
+    Automata nuevoAut = crearAutomata(nuevoAlfabeto, nuevosEstados, nuevoInicial, nuevosFinales);
+    nuevoAut.estados.arreglo[nuevoAut.estados.cant] = nuevoInicial;
+    nuevoAut.estados.cant++;
+
+    anadirTransicion(&nuevoAut, nuevoInicial, 'z', a.estadoInicial);
+    anadirTransicion(&nuevoAut, nuevoInicial, 'z', b.estadoInicial);
+
+    for(int i = 0; i < a.estados.cant; i++){
+        for(int j = 0; j < a.simbolos.cant; j++){
+            int indiceEst = indiceEstado(a, a.estados.arreglo[i]);
+            int indiceSimb = indiceSimbolo(a, a.simbolos.arreglo[j]);
+            NodoEnt *aux = a.delta[indiceEst][indiceSimb].head;
+            if(aux != NULL){
+                while( aux != NULL){
+                    anadirTransicion(&nuevoAut, a.estados.arreglo[i], a.simbolos.arreglo[j], aux->info);
+                    aux = aux->next;
+                }
+            }
+        }
+    }
+    for(int k = 0; k < b.estados.cant; k++){
+        for(int p = 0; p < b.simbolos.cant; p++){
+            int indiceEst = indiceEstado(b, b.estados.arreglo[k]);
+            int indiceSimb = indiceSimbolo(b, b.simbolos.arreglo[p]);
+            NodoEnt *aux = b.delta[indiceEst][indiceSimb].head;
+            if(aux != NULL){
+                while( aux != NULL){
+                    anadirTransicion(&nuevoAut, b.estados.arreglo[k], b.simbolos.arreglo[p], aux->info);
+                    aux = aux->next;
+                }
+            }
+        }
+    }
+    return nuevoAut;
 }
 
 void freeDelta(Automata aut){

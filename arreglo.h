@@ -14,4 +14,8 @@ typedef struct ArregloChar{
 
 void eliminarRepetidos(ArregloEnt *arreglo);
 
+ArregloEnt unionArregloEnt(ArregloEnt a, ArregloEnt b);
+
+ArregloChar unionArregloChar(ArregloChar a, ArregloChar b);
+
 #endif //TP_ARREGLO_H
