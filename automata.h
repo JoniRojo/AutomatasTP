@@ -37,4 +37,6 @@ int indiceSimbolo(Automata aut, char simbolo);
 
 void mostrarAutomata(Automata aut);
 
+void freeDelta(Automata aut);
+
 #endif //TP_AUTOMATA_H

@@ -2,8 +2,10 @@
 #include <malloc.h>
 
 #include "../automata.h"
+#include "../linkedlist.h"
 
 int main(){
+
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'z');
     insertarChar(&listaAlfabeto, 'a');
@@ -12,7 +14,40 @@ int main(){
     ArregloChar alfabeto = listCharToArray(&listaAlfabeto);
 
     ListEnt listaEstados;
-    insertarEnt(&listaEstados, 0);
+    insertarEnt(&listaEstados, 1);
+    insertarEnt(&listaEstados, 2);
+    insertarEnt(&listaEstados, 3);
+    insertarEnt(&listaEstados, 4);
+    insertarEnt(&listaEstados, 5);
+    insertarEnt(&listaEstados, 6);
+    ArregloEnt estados = listEntToArray(&listaEstados);
+
+    int inicial = 1;
+
+    ListEnt listaFinales;
+    insertarEnt(&listaFinales,5);
+    insertarEnt(&listaFinales,6);
+    ArregloEnt finales = listEntToArray(&listaFinales);
+
+    Automata a = crearAutomata( alfabeto, estados, inicial, finales);
+
+    anadirTransicion(&a,1,'a',2);
+    anadirTransicion(&a,1,'z',4);
+    anadirTransicion(&a, 2, 'c', 3);
+    anadirTransicion(&a, 3, 'z', 6);
+    anadirTransicion(&a, 4, 'b', 5);
+    anadirTransicion(&a, 4, 'b', 6);
+    anadirTransicion(&a, 5, 'b', 5);
+    anadirTransicion(&a, 5, 'b', 6);
+    anadirTransicion(&a, 6, 'z', 1);
+
+    /*
+    ListChar listaAlfabeto;
+    insertarChar(&listaAlfabeto, 'a');
+    insertarChar(&listaAlfabeto, 'b');
+    ArregloChar alfabeto = listCharToArray(&listaAlfabeto);
+
+    ListEnt listaEstados;
     insertarEnt(&listaEstados, 1);
     insertarEnt(&listaEstados, 2);
     insertarEnt(&listaEstados, 3);
@@ -29,18 +64,16 @@ int main(){
 
     Automata a = crearAutomata( alfabeto, estados, inicial, finales);
 
-    anadirTransicion(&a,0,'a',1);
-    anadirTransicion(&a,0,'z',3);
-    anadirTransicion(&a, 1, 'c', 2);
-    anadirTransicion(&a, 2, 'z', 5);
-    anadirTransicion(&a, 3, 'b', 4);
-    anadirTransicion(&a, 3, 'b', 5);
-    anadirTransicion(&a, 4, 'b', 4);
+    anadirTransicion(&a,1,'a',2);
+    anadirTransicion(&a,1,'a',4);
+    anadirTransicion(&a, 2, 'a', 3);
     anadirTransicion(&a, 4, 'b', 5);
-    anadirTransicion(&a, 5, 'z', 0);
 
+    */
     mostrarAutomata(a);
 
     Automata aAFD = AFNDtoAFD(a);
     mostrarAutomata(aAFD);
+    freeDelta(a);
+    freeDelta(aAFD);
 }

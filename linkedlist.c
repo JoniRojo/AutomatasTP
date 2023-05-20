@@ -15,7 +15,6 @@ void insertarEnt(ListEnt *list, int info){
         list->head  = new_node;
         list->head->next = aux;
     }
-    free(new_node);
 }
 
 void insertarChar(ListChar *list, char c){
@@ -30,7 +29,6 @@ void insertarChar(ListChar *list, char c){
         list->head  = new_node;
         list->head->next = aux;
     }
-    free(new_node);
 }
 
 
@@ -46,7 +44,6 @@ void insertarArr(ListOfArraysEnt *list, ArregloEnt info){
         list->head  = new_node;
         list->head->next = aux;
     }
-    free(new_node);
 }
 
 ArregloEnt listEntToArray(ListEnt *list){
@@ -69,6 +66,7 @@ ArregloEnt listEntToArray(ListEnt *list){
 
 ListEnt ArrayToListEnt(ArregloEnt arreglo){
     ListEnt result;
+    result.head = NULL;
     for(int i = 0; i < arreglo.cant; i++){
         insertarEnt(&result, arreglo.arreglo[i]);
     }
@@ -126,6 +124,45 @@ int incluye(ListEnt A, ListEnt B){
     }
     return 0;
 }
+
+int esRepetido(ListEnt A, int elem){
+    ArregloEnt arrA = listEntToArray(&A);
+    int bool = 0;
+    for(int i = 0; i < arrA.cant; i++){
+        if(arrA.arreglo[i] == elem){
+            bool = 1;
+        }
+    }
+    return bool;
+}
+
+void freeListEnt(ListEnt A){
+    NodoEnt *puntero = A.head;
+    while(puntero != NULL){
+        NodoEnt *siguiente = puntero->next;
+        free(puntero);
+        puntero = siguiente;
+    }
+}
+
+void freeListChar(ListChar A){
+    NodoChar *puntero = A.head;
+    while(puntero != NULL){
+        NodoChar *siguiente = puntero->next;
+        free(puntero);
+        puntero = siguiente;
+    }
+}
+
+void freeListOfArraysEnt(ListOfArraysEnt A){
+    NodoArr *puntero = A.head;
+    while(puntero != NULL){
+        NodoArr *siguiente = puntero->next;
+        free(puntero);
+        puntero = siguiente;
+    }
+}
+
 /*
 int sizeListOfArraysEnt(ListOfArraysEnt list){
     NodoArr *aux = list.head;

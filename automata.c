@@ -43,7 +43,6 @@ void anadirTransicion(Automata *aut, int estadoDesde, char simboloPor, int estad
         aut->delta[i][j].head  = new_node;
         aut->delta[i][j].head->next = aux;
     }
-    //free(new_node);
 }
 
 void pertenece(Automata aut, char cadena[], int n){
@@ -75,21 +74,8 @@ int ir(Automata aut, int aux, char c){
 }
 
 Automata AFNDtoAFD(Automata aut){
-
-    // Clasura lambda del estado incial = X
-    // Del conjunto obtenido X , realizar mover(X, cada simbolo)
-    // Para cada conjunto, realizar clausura lambda, estos seran mis primeros conjuntos.
-    // Luego, de esos conjuntos realizo el mover por cada simbolo y su claura lambda,
-    // si obtengo algun conjunto nuevo que no este contenido en uno anterior, sera un nuevo conjunto
-    // Esto se repite hasta que no surgan nuevos conjuntos...
-    // Luego X sera el estado inicial, y los finales seran aquellos que contienen a un estado final.
-
-
     Automata nuevoAut;
     nuevoAut.simbolos = aut.simbolos;
-    ListEnt nuevosEstados;
-    ListEnt nuevosFinales;
-    int nuevoInicial;
 
     // dado que clasuraLambda toma un arreglo de estados, pasamos nuestro estado inicial(int) a un ArregloEnt
     ArregloEnt estadoIncialArr;
@@ -98,7 +84,12 @@ Automata AFNDtoAFD(Automata aut){
     ListEnt clausuraLambdaEstadoInicialL = clausuraLambda(aut, estadoIncialArr);
     ArregloEnt clausuraLambdaEstadoInicialA = listEntToArray(&clausuraLambdaEstadoInicialL);
 
-    nuevoInicial = nuevoNombreEstado(clausuraLambdaEstadoInicialA);
+    int nuevoInicial = nuevoNombreEstado(clausuraLambdaEstadoInicialA);
+    nuevoAut.estadoInicial = nuevoInicial;
+
+    // actualizo mi arreglo de estados en el nuevo automata
+    nuevoAut.estados.arreglo[nuevoAut.estados.cant] = nuevoInicial;
+    nuevoAut.estados.cant = nuevoAut.estados.cant + 1;
 
     // creo una lista de listas de arreglos, donde cada nodo sera un arreglo de estados,
     //  que luego unificare para formar un solo estado para el AFD(nuevoNombre)
@@ -118,7 +109,7 @@ Automata AFNDtoAFD(Automata aut){
     }
     ArregloChar alfabetoSinLambda = listCharToArray(&alfabetoSinLambdaL);
 
-    ListOfArraysEnt listaEstadosAux;
+    ListOfArraysEnt listaEstadosAIterar;
     for(int i = 0; i < alfabetoSinLambda.cant; i++){
         ListEnt aux = mover(aut, clausuraLambdaEstadoInicialA, alfabetoSinLambda.arreglo[i]);
         ArregloEnt aux2 = listEntToArray(&aux);
@@ -129,41 +120,48 @@ Automata AFNDtoAFD(Automata aut){
         // si no esta contenido, lo agrego a la lista estados(del AFD) y lo guardo para procesar luego
         if(contenido(conjuntoNuevo, clausuraLambdaEstadoInicialL) == 0){
             insertarArr(&listaEstadosNuevos, conjuntoNuevoArr);
-            insertarArr(&listaEstadosAux,conjuntoNuevoArr);
+            insertarArr(&listaEstadosAIterar,conjuntoNuevoArr);
             // creo la representacion del nuevo estado
             int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
+            // actualizo mi arreglo de estados en el nuevo automata
+            nuevoAut.estados.arreglo[nuevoAut.estados.cant] = nuevoNum;
+            nuevoAut.estados.cant = nuevoAut.estados.cant + 1;
+
             // agrego transicion
             anadirTransicion(&nuevoAut,nuevoInicial, alfabetoSinLambda.arreglo[i], nuevoNum);
         }
     }
 
     // llamo a cicloNuevosConjuntos, metodo para ciclar buscando conjuntos nuevos
-    cicloNuevosConjuntos(aut, &nuevoAut, listaEstadosAux, &listaEstadosNuevos, alfabetoSinLambda);
+    cicloNuevosConjuntos(aut, &nuevoAut, listaEstadosAIterar, &listaEstadosNuevos, alfabetoSinLambda);
 
     // para este punto, ya tenemos el alfabeto, el estado inical y las transiciones...
     // definimos aquellos estados que son finales
+    ListEnt nuevosAutFinales;
     NodoArr *pAListaEstados = listaEstadosNuevos.head;
     while(pAListaEstados != NULL){
         ListEnt A = ArrayToListEnt(aut.finales);
         ListEnt B = ArrayToListEnt(pAListaEstados->arreglo);
         if(incluye(A,B) == 1){
             int finalNuevo = nuevoNombreEstado(pAListaEstados->arreglo);
-            insertarEnt(&nuevosFinales, finalNuevo);
+            insertarEnt(&nuevosAutFinales, finalNuevo);
         }
         pAListaEstados = pAListaEstados->next;
     }
 
     // ahora queda pasar todos los arreglos de la lista listaEstadosNuevos(ListOfArraysEnt) a su nueva representacion
+    ListEnt nuevoAutEstados;
     pAListaEstados = listaEstadosNuevos.head;
     while(pAListaEstados != NULL){
         int nuevoNom = nuevoNombreEstado(pAListaEstados->arreglo);
-        insertarEnt(&nuevosEstados,nuevoNom);
+        insertarEnt(&nuevoAutEstados,nuevoNom);
         pAListaEstados = pAListaEstados->next;
     }
 
-    nuevoAut.estados = listEntToArray(&nuevosEstados);
-    nuevoAut.finales = listEntToArray(&nuevosFinales);
-    nuevoAut.estadoInicial = nuevoInicial;
+    nuevoAut.estados = listEntToArray(&nuevoAutEstados);
+    nuevoAut.finales = listEntToArray(&nuevosAutFinales);
+    //freeListEnt(nuevosEstados);
+    //freeListEnt(nuevosFinales);
     return nuevoAut;
 }
 
@@ -171,37 +169,52 @@ Automata AFNDtoAFD(Automata aut){
 // listaEstadosResultado es la lista de los estados que finalmente tendre en mi nuevo ADF
 // listaEstadosAIterar es la lista utilizada para almacenar la lista de estados a iterar
 void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt listaEstadosAIterar, ListOfArraysEnt *listaEstadosResultado, ArregloChar alfabetoSinLambda){
-    NodoArr *pAlista = listaEstadosAIterar.head;
-    NodoArr *pAlista2 = listaEstadosResultado->head;
-    ListOfArraysEnt listaEstadosAux;
-    while( pAlista != NULL){  // Mientras tenga conjuntos a iterar
+    NodoArr *pAlistaEstadosAIterar = listaEstadosAIterar.head;
+    NodoArr *pAlistaEstadosResultado = listaEstadosResultado->head;
+    ListOfArraysEnt listaEstadosNuevosAIterar;
+    while( pAlistaEstadosAIterar != NULL){  // Mientras tenga conjuntos a iterar
         for(int i = 0; i < alfabetoSinLambda.cant; i++){    // por cada simbolo del alfabeto
             // calculo clausuraLambda(mover())
-            ListEnt aux = mover(aut, pAlista->arreglo, alfabetoSinLambda.arreglo[i]);
+            ListEnt aux = mover(aut, pAlistaEstadosAIterar->arreglo, alfabetoSinLambda.arreglo[i]);
             ArregloEnt aux2 = listEntToArray(&aux);
             ListEnt conjuntoNuevo = clausuraLambda(aut, aux2);
             ArregloEnt conjuntoNuevoArr = listEntToArray(&conjuntoNuevo);
-            while( pAlista2 != NULL){  // por cada estado "ya confirmado" en mi nuevo AFD(listaEstadosResultado)
-                ListEnt conjunto = ArrayToListEnt(pAlista2->arreglo);
-                // chequeo si el conjunto obtenido no esta contenido en el arreglo actual de listaEstadosResultado
-                if(contenido(conjuntoNuevo, conjunto) == 0){
-                    insertarArr(listaEstadosResultado, conjuntoNuevoArr);
-                    insertarArr(&listaEstadosAux,conjuntoNuevoArr);
-                    // Creo la representacion del nuevo estado, y la del estado de listaEstadosResultado
-                    int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
-                    int nuevoNum2 = nuevoNombreEstado(pAlista2->arreglo);
-                    //agrego transicion
-                    anadirTransicion(nuevoAut, nuevoNum2, alfabetoSinLambda.arreglo[i], nuevoNum);
+            if(conjuntoNuevoArr.cant != 0){
+                int esta = 0;
+                //ArregloEnt arregloAux;
+                while( pAlistaEstadosResultado != NULL){  // por cada estado "ya confirmado" en mi nuevo AFD(listaEstadosResultado)
+                    ListEnt conjunto = ArrayToListEnt(pAlistaEstadosResultado->arreglo);
+                    // chequeo si el conjunto obtenido esta contenido en el arreglo actual de listaEstadosResultado
+                    if(contenido(conjuntoNuevo, conjunto) == 1){
+                        esta = 1;
+                    }
+                    //arregloAux = pAlista2 ->arreglo;
+                    pAlistaEstadosResultado = pAlistaEstadosResultado->next;
                 }
-                pAlista2 = pAlista2->next;
+                if(esta == 0){
+                    insertarArr(listaEstadosResultado, conjuntoNuevoArr);
+                    insertarArr(&listaEstadosNuevosAIterar,conjuntoNuevoArr);
+                    // actualizo mi arreglo de estados en el nuevo automata
+                    int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
+                    nuevoAut->estados.arreglo[nuevoAut->estados.cant] = nuevoNum;
+                    nuevoAut->estados.cant = nuevoAut->estados.cant + 1;
+                }
+                int numEstadoDesde = nuevoNombreEstado(pAlistaEstadosAIterar->arreglo);
+                // Creo la representacion del nuevo estado, y la del estado de listaEstadosResultado
+                int nuevoNum = nuevoNombreEstado(conjuntoNuevoArr);
+                //agrego transicion
+                anadirTransicion(nuevoAut, numEstadoDesde, alfabetoSinLambda.arreglo[i], nuevoNum);
             }
-            pAlista2 = listaEstadosResultado->head;
+            pAlistaEstadosResultado = listaEstadosResultado->head;
         }
-        pAlista = pAlista->next;
+        pAlistaEstadosAIterar = pAlistaEstadosAIterar->next;
     }
+
+    //hasta aca anda
+
     // si consegui al menos un conjunto nuevo, llamada recursiva
-    if(listaEstadosAux.head != NULL){
-        cicloNuevosConjuntos(aut, nuevoAut,listaEstadosAux, listaEstadosResultado, alfabetoSinLambda);
+    if(listaEstadosNuevosAIterar.head != NULL){
+        cicloNuevosConjuntos(aut, nuevoAut,listaEstadosNuevosAIterar, listaEstadosResultado, alfabetoSinLambda);
     }
     //free(pAlista);
     //free(pAlista2);
@@ -214,20 +227,20 @@ void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt list
  * 1 1
  */
 int nuevoNombreEstado(ArregloEnt conjuntoNuevo){
-    int nuevoNum = -1;
+    int nuevoNum = 0;
     int n = conjuntoNuevo.cant;
-    int aux = -1;
+    int aux;
     if( n == 1){
-        aux = 1;
+        return conjuntoNuevo.arreglo[0];
     }else{
         aux = 1;
         for(int j = 0; j < n-1; j++ ){
             aux = aux * 10;
         }
-    }
-    for(int i = 0; i < conjuntoNuevo.cant; i++){
-        nuevoNum = conjuntoNuevo.arreglo[i] * aux;
-        aux = aux/10;
+        for(int i = 0; i < conjuntoNuevo.cant; i++){
+            nuevoNum = nuevoNum + (conjuntoNuevo.arreglo[i] * aux);
+            aux = aux/10;
+        }
     }
     return nuevoNum;
 }
@@ -243,10 +256,9 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
     for(int i = 0; i < estados.cant; i++){
         int indiceEst = indiceEstado(aut, estados.arreglo[i]);
         NodoEnt *aux = aut.delta[indiceEst][indiceLambda].head;
-        if(aux == NULL){
-            break;
-        } else {
+        if(aux != NULL){
             while( aux != NULL){
+                /*
                 NodoEnt *new_node = (NodoEnt *)malloc(sizeof(NodoEnt));
                 new_node->info = aux->info;
                 new_node->next = NULL;
@@ -258,12 +270,28 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
                     result.head = new_node;
                     result.head->next = aux2;
                 }
+                */
+                // chequear si por otro lambda llego a otro estado
+                // calculo la clausera lambda del estado anterior que agrego a result
+                // si encuentro algo, lo inserto en result
+                ArregloEnt aux3;
+                aux3.arreglo[0] = aux->info;
+                aux3.cant = 1;
+                ArregloEnt aux4;
+                ListEnt aux5;
+                aux5 = clausuraLambda(aut, aux3);
+                aux4 = listEntToArray(&aux5);
+                for( int j = 0; j < aux4.cant; j++){
+                    //insertarEnt(&result, aux4.arreglo[j]);
+                    insertarEnt(&result,aux4.arreglo[j]);
+                }
+
                 aux = aux->next;
             }
         }
-        //free(aux);
     }
     ArregloEnt resultArray = listEntToArray(&result);
+    // me debo asegurar que en resultArray queden los estados del parametro clauseraLambda
     for(int j = 0; j < estados.cant; j++){
         int esta = 0;
         for(int k = 0; k < resultArray.cant; k++){
@@ -271,7 +299,7 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
                 esta = 1;
             }
         }
-        if(esta == 1){
+        if(esta == 0){
             insertarEnt(&result,estados.arreglo[j]);
         }
     }
@@ -286,27 +314,31 @@ ListEnt mover(Automata aut, ArregloEnt estados, char simbolo){
     for(int i = 0; i < estados.cant; i++){
         int indiceEst = indiceEstado(aut, estados.arreglo[i]);
         NodoEnt *aux = aut.delta[indiceEst][indiceSimb].head;
-        if(aux == NULL){
-            break;
-        } else {
+        if(aux != NULL){
             while( aux != NULL){
-                NodoEnt *new_node = (NodoEnt *)malloc(sizeof(NodoEnt));
-                new_node->info = aux->info;
-                new_node->next = NULL;
+                if(esRepetido(result, aux->info) == 0){
+                    NodoEnt *new_node = (NodoEnt *)malloc(sizeof(NodoEnt));
+                    new_node->info = aux->info;
+                    new_node->next = NULL;
 
-                if (result.head == NULL) {
-                    result.head  = new_node;
-                } else {
-                    NodoEnt *aux2 = result.head;
-                    result.head = new_node;
-                    result.head->next = aux2;
+                    if (result.head == NULL) {
+                        result.head  = new_node;
+                    } else {
+                        NodoEnt *aux2 = result.head;
+                        result.head = new_node;
+                        result.head->next = aux2;
+                    }
                 }
                 aux = aux->next;
             }
         }
-        //free(aux);
     }
 
+    //elimino posibles estados repetidos
+    //ArregloEnt arregloARetornar = listEntToArray(&result);
+    //eliminarRepetidos(&arregloARetornar);
+    //freeListEnt(result);
+    //return ArrayToListEnt(arregloARetornar);
     return result;
 }
 
@@ -326,6 +358,14 @@ int indiceSimbolo(Automata aut, char simbolo){
         }
     }
     return -1;
+}
+
+void freeDelta(Automata aut){
+    for(int i = 0; i < aut.estados.cant; i++){
+        for(int j = 0; j < aut.simbolos.cant; j++){
+            freeListEnt(aut.delta[i][j]);
+        }
+    }
 }
 
 void mostrarAutomata(Automata aut){

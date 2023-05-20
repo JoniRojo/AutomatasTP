@@ -38,6 +38,10 @@ void insertarChar(ListChar *list, char info);
 void insertarArr(ListOfArraysEnt *list, ArregloEnt info);
 int contenido(ListEnt A, ListEnt B);
 int incluye(ListEnt A, ListEnt B);
+int esRepetido(ListEnt A, int elem);
+void freeListEnt(ListEnt A);
+void freeListChar(ListChar A);
+void freeListOfArraysEnt(ListOfArraysEnt A);
 //int sizeListOfArraysEnt(ListOfArraysEnt list);
 /*
 void crear(Nodo **list);
