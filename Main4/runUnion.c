@@ -11,19 +11,19 @@ int main(){
 
     ListEnt listaEstados1;
     insertarEnt(&listaEstados1, 1);
-    insertarEnt(&listaEstados1, 2);
+    insertarEnt(&listaEstados1, 3);
     ArregloEnt estados1 = listEntToArray(&listaEstados1);
 
     int inicial1 = 1;
 
     ListEnt listaFinales1;
-    insertarEnt(&listaFinales1,2);
+    insertarEnt(&listaFinales1,3);
     ArregloEnt finales1 = listEntToArray(&listaFinales1);
 
     Automata a1 = crearAutomata( alfabeto1, estados1, inicial1, finales1);
 
-    anadirTransicion(&a1,1,'a',2);
-    anadirTransicion(&a1,2,'a',2);
+    anadirTransicion(&a1,1,'a',3);
+    anadirTransicion(&a1,3,'a',3);
 
     printf("Primer automata: \n");
     mostrarAutomata(a1);

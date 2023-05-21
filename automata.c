@@ -363,6 +363,7 @@ int indiceSimbolo(Automata aut, char simbolo){
 }
 
 Automata unionAut(Automata a, Automata b){
+    estadosRepetidos(&a, b);
     ArregloEnt nuevosEstados;
     nuevosEstados = unionArregloEnt(a.estados, b.estados);
 
@@ -386,11 +387,9 @@ Automata unionAut(Automata a, Automata b){
             int indiceEst = indiceEstado(a, a.estados.arreglo[i]);
             int indiceSimb = indiceSimbolo(a, a.simbolos.arreglo[j]);
             NodoEnt *aux = a.delta[indiceEst][indiceSimb].head;
-            if(aux != NULL){
-                while( aux != NULL){
-                    anadirTransicion(&nuevoAut, a.estados.arreglo[i], a.simbolos.arreglo[j], aux->info);
-                    aux = aux->next;
-                }
+            while( aux != NULL){
+                anadirTransicion(&nuevoAut, a.estados.arreglo[i], a.simbolos.arreglo[j], aux->info);
+                aux = aux->next;
             }
         }
     }
@@ -399,15 +398,66 @@ Automata unionAut(Automata a, Automata b){
             int indiceEst = indiceEstado(b, b.estados.arreglo[k]);
             int indiceSimb = indiceSimbolo(b, b.simbolos.arreglo[p]);
             NodoEnt *aux = b.delta[indiceEst][indiceSimb].head;
-            if(aux != NULL){
-                while( aux != NULL){
-                    anadirTransicion(&nuevoAut, b.estados.arreglo[k], b.simbolos.arreglo[p], aux->info);
-                    aux = aux->next;
-                }
+            while( aux != NULL){
+                anadirTransicion(&nuevoAut, b.estados.arreglo[k], b.simbolos.arreglo[p], aux->info);
+                aux = aux->next;
             }
         }
     }
     return nuevoAut;
+}
+
+void estadosRepetidos(Automata *a, Automata b){
+    ArregloEnt repetidos;
+    repetidos.cant = 0;
+
+    for(int i = 0; i < a->estados.cant; i++){
+        int esta = 0;
+        for(int j = 0 ; j < b.estados.cant; j++){
+            if( a->estados.arreglo[i] == b.estados.arreglo[j]){
+                esta = 1;
+            }
+        }
+        if( esta == 1){
+            repetidos.arreglo[repetidos.cant] = a->estados.arreglo[i];
+            repetidos.cant++;
+        }
+    }
+
+    for( int k = 0; k < repetidos.cant; k++){
+        int estadoActual = repetidos.arreglo[k];
+        int indiceEstadoActual = indiceEstado( *a, estadoActual);
+        int nuevoNumEstado = estadoActual + 10;
+        a->estados.arreglo[a->estados.cant] = nuevoNumEstado;
+        a->estados.cant++;
+        for( int p = 0; p < a->simbolos.cant; p++){
+            int indiceSimb = indiceSimbolo(*a, a->simbolos.arreglo[p]);
+            NodoEnt *aux = a->delta[indiceEstadoActual][indiceSimb].head;
+            while( aux != NULL){
+                anadirTransicion(a, nuevoNumEstado, a->simbolos.arreglo[p], aux->info);
+                aux = aux->next;
+            }
+            int indiceEstadoNuevo = indiceEstado(*a, nuevoNumEstado);
+            a->delta[indiceEstadoActual][indiceSimb].head = a->delta[indiceEstadoNuevo][indiceSimb].head;
+            a->delta[indiceEstadoNuevo][indiceSimb].head = NULL;
+        }
+        a->estados.arreglo[indiceEstadoActual] = nuevoNumEstado;
+        a->estados.cant--;
+
+        for(int j = 0; j < a->estados.cant; j++){
+            for(int h = 0; h < a->simbolos.cant; h++){
+                int indiceEst = indiceEstado(*a, a->estados.arreglo[j]);
+                int indiceSim = indiceSimbolo(*a, a->simbolos.arreglo[h]);
+                NodoEnt *aux2 = a->delta[indiceEst][indiceSim].head;
+                while( aux2 != NULL){
+                    if( aux2->info == estadoActual){
+                        aux2->info = nuevoNumEstado;
+                    }
+                    aux2 = aux2->next;
+                }
+            }
+        }
+    }
 }
 
 void freeDelta(Automata aut){
