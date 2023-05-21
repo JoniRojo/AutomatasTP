@@ -39,6 +39,8 @@ Automata unionAut(Automata a, Automata b);
 
 void estadosRepetidos(Automata *a, Automata b);
 
+Automata concatenarAut(Automata a, Automata b);
+
 void mostrarAutomata(Automata aut);
 
 void freeDelta(Automata aut);
