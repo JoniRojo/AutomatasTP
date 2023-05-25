@@ -505,6 +505,57 @@ Automata concatenarAut(Automata a, Automata b){
     return nuevoAut;
 }
 
+Automata clausuraKlenneAut(Automata a){
+    ArregloEnt nuevosEstados;
+    nuevosEstados = a.estados;
+
+    ArregloChar nuevoAlfabeto;
+    nuevoAlfabeto = a.simbolos;
+
+    int inicialOriginales = a.estadoInicial;
+
+    ArregloEnt finalesOriginales;
+    finalesOriginales = a.finales;
+
+    Automata nuevoAut = crearAutomata(nuevoAlfabeto, nuevosEstados, inicialOriginales, finalesOriginales);
+
+    for(int i = 0; i < a.estados.cant; i++){
+        for(int j = 0; j < a.simbolos.cant; j++){
+            int indiceEst = indiceEstado(a, a.estados.arreglo[i]);
+            int indiceSimb = indiceSimbolo(a, a.simbolos.arreglo[j]);
+            NodoEnt *aux = a.delta[indiceEst][indiceSimb].head;
+            while( aux != NULL){
+                anadirTransicion(&nuevoAut, a.estados.arreglo[i], a.simbolos.arreglo[j], aux->info);
+                aux = aux->next;
+            }
+        }
+    }
+
+    int nuevoInicial = nuevoAut.estadoInicial + 10;
+    nuevoAut.estadoInicial = nuevoInicial;
+
+    ArregloEnt nuevoFinal;
+    nuevoFinal.arreglo[0] = nuevoAut.estadoInicial + 10;
+    nuevoFinal.cant = 1;
+    nuevoAut.finales = nuevoFinal;
+
+    nuevoAut.estados.arreglo[nuevoAut.estados.cant] = nuevoInicial;
+    nuevoAut.estados.cant++;
+    nuevoAut.estados.arreglo[nuevoAut.estados.cant] = nuevoFinal.arreglo[0];
+    nuevoAut.estados.cant++;
+
+    int indiceEstadoInicialOriginal = indiceEstado(a, a.estadoInicial);
+    anadirTransicion(&nuevoAut, nuevoAut.estadoInicial, 'z', nuevoAut.estados.arreglo[indiceEstadoInicialOriginal]);
+    for(int k = 0; k < a.finales.cant; k++){
+        int indiceEstadoFinalOriginal = indiceEstado(a, a.finales.arreglo[k]);
+        anadirTransicion(&nuevoAut, nuevoAut.estados.arreglo[indiceEstadoFinalOriginal], 'z', nuevoAut.finales.arreglo[0]);
+    }
+    anadirTransicion(&nuevoAut, nuevoAut.estadoInicial, 'z', nuevoAut.finales.arreglo[0]);
+    anadirTransicion(&nuevoAut, nuevoAut.finales.arreglo[0], 'z', nuevoAut.estadoInicial);
+
+    return  nuevoAut;
+}
+
 void freeDelta(Automata aut){
     for(int i = 0; i < aut.estados.cant; i++){
         for(int j = 0; j < aut.simbolos.cant; j++){
