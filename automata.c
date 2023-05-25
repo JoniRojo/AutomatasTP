@@ -556,6 +556,52 @@ Automata clausuraKlenneAut(Automata a){
     return  nuevoAut;
 }
 
+Automata minimizacionAut(Automata a){
+    ArregloEnt estadosNoFinales = diferenciaArregloEnt(a.estados, a.finales);
+    ListOfArraysEnt listaParticiones;
+    insertarArr(&listaParticiones, estadosNoFinales);
+    insertarArr(&listaParticiones, a.finales);
+    ArrayOfArraysEnt claseEquivalencia;
+    claseEquivalencia.cant = 0;
+    // int representanteEstadosNoFinales = estadosNoFinales.arreglo[0];
+    // int representanteFinales = a.finales.arreglo[0];
+    ListChar alfabetoSinLambdaL;
+    for(int k = 0; k < a.simbolos.cant; k++){
+        if(a.simbolos.arreglo[k] != 'z'){
+            insertarChar(&alfabetoSinLambdaL, a.simbolos.arreglo[k]);
+        }
+    }
+    ArregloChar alfabetoSinLambda = listCharToArray(&alfabetoSinLambdaL);
+    for( int i = 0; i < a.estados.cant; i++){
+        int indiceEstadoi = indiceEstado(a, a.estados.arreglo[i]);
+        for(int j = 0; j < alfabetoSinLambda.arreglo[j]; j++){
+            int indiceSimb = indiceSimbolo(a, a.simbolos.arreglo[j]);
+            NodoEnt *aux = a.delta[indiceEstadoi][indiceSimb].head;
+            if( aux != NULL ){
+                NodoArr *pListaParticiones = listaParticiones.head;
+                while( pListaParticiones != NULL){
+                    int esta = 0;
+                    for(int k = 0; k < pListaParticiones->arreglo.cant; k++){
+                        if( aux->info == pListaParticiones->arreglo.arreglo[k] ){
+                            esta = 1;
+                        }
+                    }
+                    if( esta == 1){
+                        claseEquivalencia.array[indiceEstadoi].arreglo[claseEquivalencia.array[indiceEstadoi].cant] = pListaParticiones->arreglo.arreglo[0];
+                        claseEquivalencia.array[indiceEstadoi].cant++;
+                    }
+                    pListaParticiones = pListaParticiones->next;
+                }
+            }else{
+                claseEquivalencia.array[indiceEstadoi].arreglo[claseEquivalencia.array[indiceEstadoi].cant] = -1;
+                claseEquivalencia.array[indiceEstadoi].cant++;
+            }
+        }
+    }
+}
+
+void refinarClasesEquivalencia();
+
 void freeDelta(Automata aut){
     for(int i = 0; i < aut.estados.cant; i++){
         for(int j = 0; j < aut.simbolos.cant; j++){

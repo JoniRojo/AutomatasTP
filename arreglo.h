@@ -12,10 +12,17 @@ typedef struct ArregloChar{
     int cant;
 }ArregloChar;
 
+typedef struct ArrayOfArraysEnt{
+    ArregloEnt array[MAX2];
+    int cant;
+}ArrayOfArraysEnt;
+
 void eliminarRepetidos(ArregloEnt *arreglo);
 
 ArregloEnt unionArregloEnt(ArregloEnt a, ArregloEnt b);
 
 ArregloChar unionArregloChar(ArregloChar a, ArregloChar b);
+
+ArregloEnt diferenciaArregloEnt(ArregloEnt a, ArregloEnt b);
 
 #endif //TP_ARREGLO_H

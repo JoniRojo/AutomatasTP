@@ -43,6 +43,10 @@ Automata concatenarAut(Automata a, Automata b);
 
 Automata clausuraKlenneAut(Automata a);
 
+Automata minimizacionAut(Automata a);
+
+void refinarClasesEquivalencia();
+
 void mostrarAutomata(Automata aut);
 
 void freeDelta(Automata aut);

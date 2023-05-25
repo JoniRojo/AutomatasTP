@@ -67,3 +67,20 @@ ArregloChar unionArregloChar(ArregloChar a, ArregloChar b){
     return result;
 }
 
+ArregloEnt diferenciaArregloEnt(ArregloEnt a, ArregloEnt b){
+    ArregloEnt result;
+    result.cant = 0;
+    for(int i = 0; i < a.cant; i++){
+        int esta = 0;
+        for(int j = 0; j < b.cant; j++){
+            if(a.arreglo[i] == b.arreglo[j]){
+                esta = 1;
+            }
+        }
+        if(esta == 0){
+            result.arreglo[result.cant] = a.arreglo[i];
+            result.cant++;
+        }
+    }
+    return result;
+}
