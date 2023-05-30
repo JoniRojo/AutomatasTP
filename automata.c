@@ -600,7 +600,67 @@ Automata minimizacionAut(Automata a){
     }
 }
 
-void refinarClasesEquivalencia();
+void refinarClasesEquivalencia(Automata a, ArrayOfArraysEnt *claseEquivalencia, ListOfArraysEnt *listaParticiones){
+    NodoArr *pListaParticiones = listaParticiones->head;
+    ListOfArraysEnt listaParticionesNuevas;
+    NodoArr *pListaParticionesNuevas = listaParticionesNuevas.head;
+    int refinar = 0;
+    while( pListaParticiones != NULL) {
+        // Chequear si todas las clases de equivalencia son iguales
+        if( clasesEquivalenciaIguales(a, pListaParticiones->arreglo, *claseEquivalencia) == 1){
+            // En caso que si, se agrega la particion a la listaParticionesNuevas
+            insertarArr( pListaParticionesNuevas,pListaParticiones->arreglo);
+            
+
+        }else{
+            refinar = 1;
+            // Guardar en un arreglo aquellas particiones que tienen las mismas clases de equivalencia
+            ArrayOfArraysEnt estadosRepetidos;
+            estadosRepetidos.cant = 0;
+            for(int i = 0; i < pListaParticiones->arreglo.cant; i++) {
+                int indiceEstadoi = indiceEstado(a, pListaParticiones->arreglo.arreglo[i]);
+                for(int j = 0; j < pListaParticiones->arreglo.cant; j++){
+                    int indiceEstadoj = indiceEstado(a, pListaParticiones->arreglo.arreglo[j]);
+                    if(igualdadArreglosEnt(claseEquivalencia->array[indiceEstadoi], claseEquivalencia->array[indiceEstadoj]) == 0){
+                        estadosRepetidos.array[estadosRepetidos.cant] =  claseEquivalencia->array[indiceEstadoj];
+                        estadosRepetidos.cant++;
+                    }
+                }
+            }
+            // Primero identificar aquellas particiones que tienen las mismas clases de equivalencia con la ayuda del arreglo anteriormente obtenido
+            // para luego crear una nueva particion con sus clases de equivalencia
+            for( int k = 0; k < estadosRepetidos.cant; k++){
+                ArregloEnt arregloEstadosIguales;
+                arregloEstadosIguales.cant = 0;
+                for(int h = 0; h < pListaParticiones->arreglo.cant; h++){
+                    int indiceEstadoh = indiceEstado(a, pListaParticiones->arreglo.arreglo[h]);
+                    if( igualdadArreglosEnt(estadosRepetidos.array[k], claseEquivalencia->array[indiceEstadoh]) == 1){
+                        arregloEstadosIguales.arreglo[arregloEstadosIguales.cant] = pListaParticiones->arreglo.arreglo[h];
+                        arregloEstadosIguales.cant++;
+                    }
+                }
+                insertarArr(pListaParticionesNuevas,arregloEstadosIguales);
+            }
+        }
+        // Renombramiento
+
+        pListaParticiones = pListaParticiones->next;
+    }
+}
+
+int clasesEquivalenciaIguales(Automata a, ArregloEnt particion, ArrayOfArraysEnt clasesEquivalencia){
+    int iguales = 1;
+    for(int i = 0; i < particion.cant; i++){
+        int indiceEstadoi = indiceEstado(a, particion.arreglo[i]);
+        for(int j = 0; j < particion.cant; j++){
+            int indiceEstadoj = indiceEstado(a, particion.arreglo[j]);
+            if( igualdadArreglosEnt(clasesEquivalencia.array[indiceEstadoi], clasesEquivalencia.array[indiceEstadoj]) == 0){
+                iguales = 0;
+            }
+        }
+    }
+    return iguales;
+}
 
 void freeDelta(Automata aut){
     for(int i = 0; i < aut.estados.cant; i++){
