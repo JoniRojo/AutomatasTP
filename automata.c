@@ -566,9 +566,9 @@ Automata minimizacionAut(Automata a){
     // int representanteEstadosNoFinales = estadosNoFinales.arreglo[0];
     // int representanteFinales = a.finales.arreglo[0];
     ListChar alfabetoSinLambdaL;
-    for(int k = 0; k < a.simbolos.cant; k++){
-        if(a.simbolos.arreglo[k] != 'z'){
-            insertarChar(&alfabetoSinLambdaL, a.simbolos.arreglo[k]);
+    for(int g = 0; g < a.simbolos.cant; g++){
+        if(a.simbolos.arreglo[g] != 'z'){
+            insertarChar(&alfabetoSinLambdaL, a.simbolos.arreglo[g]);
         }
     }
     ArregloChar alfabetoSinLambda = listCharToArray(&alfabetoSinLambdaL);
@@ -598,18 +598,68 @@ Automata minimizacionAut(Automata a){
             }
         }
     }
+    refinarClasesEquivalencia(a, &claseEquivalencia, &listaParticiones);
+    // Construir el nuevo automata
+    /*ArregloEnt estados;       // Estados son numeros
+    ArregloChar simbolos;     // Simbolos del alfabeto son caracteres
+    ListEnt delta[MAX][MAX];   // Filas son estados, columnas son simbolos, cada elemento de la matriz es una lista
+    ArregloEnt finales;
+    int estadoInicial;*/
+    
+    ArregloChar nuevoAlfabeto;
+    nuevoAlfabeto.cant = 0;
+    nuevoAlfabeto = a.simbolos;
+
+    ArregloEnt nuevosEstados;
+    nuevosEstados.cant = 0;
+    
+    NodoArr *pListaParticiones = listaParticiones.head;
+    while( pListaParticiones != NULL){
+        nuevosEstados.arreglo[nuevosEstados.cant] = pListaParticiones->arreglo.arreglo[0];
+        nuevosEstados.cant++;
+        pListaParticiones = pListaParticiones->next;
+    }    
+
+    int nuevoEstadoInicial;
+    pListaParticiones = listaParticiones.head;
+    while( pListaParticiones != NULL){
+        for(int h = 0; h < pListaParticiones->arreglo.cant; h++){
+            if(a.estadoInicial == pListaParticiones->arreglo.arreglo[h]){
+                nuevoEstadoInicial = pListaParticiones->arreglo.arreglo[h];
+            }
+        }
+        pListaParticiones = pListaParticiones->next;
+    }
+
+    ArregloEnt finalesNuevos;
+    finalesNuevos.cant = 0;
+    pListaParticiones = listaParticiones.head;
+    while( pListaParticiones != NULL){
+        ArregloEnt interseccionFinalesParticion = interseccionArregloEnt(a.finales,pListaParticiones->arreglo);
+        if( interseccionFinalesParticion.cant != 0){
+            finalesNuevos.arreglo[finalesNuevos.cant] = pListaParticiones->arreglo.arreglo[0];
+            finalesNuevos.cant++;
+        }
+        pListaParticiones = pListaParticiones->next;
+    }
+
+    Automata nuevoAut = crearAutomata(nuevoAlfabeto, nuevosEstados, nuevoEstadoInicial, finalesNuevos);
+
+    pListaParticiones = listaParticiones.head;
+    
+
+
 }
 
 void refinarClasesEquivalencia(Automata a, ArrayOfArraysEnt *claseEquivalencia, ListOfArraysEnt *listaParticiones){
     NodoArr *pListaParticiones = listaParticiones->head;
     ListOfArraysEnt listaParticionesNuevas;
-    NodoArr *pListaParticionesNuevas = listaParticionesNuevas.head;
     int refinar = 0;
     while( pListaParticiones != NULL) {
         // Chequear si todas las clases de equivalencia son iguales
         if( clasesEquivalenciaIguales(a, pListaParticiones->arreglo, *claseEquivalencia) == 1){
             // En caso que si, se agrega la particion a la listaParticionesNuevas
-            insertarArr( pListaParticionesNuevas,pListaParticiones->arreglo);
+            insertarArr( &listaParticionesNuevas,pListaParticiones->arreglo);
             
 
         }else{
@@ -639,12 +689,48 @@ void refinarClasesEquivalencia(Automata a, ArrayOfArraysEnt *claseEquivalencia, 
                         arregloEstadosIguales.cant++;
                     }
                 }
-                insertarArr(pListaParticionesNuevas,arregloEstadosIguales);
+                insertarArr(&listaParticionesNuevas,arregloEstadosIguales);
             }
         }
-        // Renombramiento
-
         pListaParticiones = pListaParticiones->next;
+    }
+    // Renombramiento
+    ListChar alfabetoSinLambdaL;
+    for(int k = 0; k < a.simbolos.cant; k++){
+        if(a.simbolos.arreglo[k] != 'z'){
+            insertarChar(&alfabetoSinLambdaL, a.simbolos.arreglo[k]);
+        }
+    }
+    ArregloChar alfabetoSinLambda = listCharToArray(&alfabetoSinLambdaL);
+    for( int i = 0; i < a.estados.cant; i++){
+        int indiceEstadoi = indiceEstado(a, a.estados.arreglo[i]);
+        for(int j = 0; j < alfabetoSinLambda.arreglo[j]; j++){
+            int indiceSimb = indiceSimbolo(a, a.simbolos.arreglo[j]);
+            NodoEnt *aux = a.delta[indiceEstadoi][indiceSimb].head;
+            if( aux != NULL ){
+                NodoArr *pListaParticionesNuevas = listaParticionesNuevas.head;
+                while( pListaParticionesNuevas != NULL){
+                    int esta = 0;
+                    for(int k = 0; k < pListaParticionesNuevas->arreglo.cant; k++){
+                        if( aux->info == pListaParticionesNuevas->arreglo.arreglo[k] ){
+                            esta = 1;
+                        }
+                    }
+                    if( esta == 1){
+                        claseEquivalencia->array[indiceEstadoi].arreglo[claseEquivalencia->array[indiceEstadoi].cant] = pListaParticionesNuevas->arreglo.arreglo[0];
+                        claseEquivalencia->array[indiceEstadoi].cant++;
+                    }
+                    pListaParticionesNuevas = pListaParticionesNuevas->next;
+                }
+            }else{
+                claseEquivalencia->array[indiceEstadoi].arreglo[claseEquivalencia->array[indiceEstadoi].cant] = -1;
+                claseEquivalencia->array[indiceEstadoi].cant++;
+            }
+        }
+    }
+    // Llamada recursiva
+    if( refinar == 1 ){
+        refinarClasesEquivalencia(a, claseEquivalencia, &listaParticionesNuevas);
     }
 }
 

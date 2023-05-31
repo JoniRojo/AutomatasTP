@@ -45,6 +45,25 @@ ArregloEnt unionArregloEnt(ArregloEnt a, ArregloEnt b){
     return result;
 }
 
+
+ArregloEnt interseccionArregloEnt(ArregloEnt a, ArregloEnt b){
+    ArregloEnt result;
+    result.cant = 0;
+    for(int j = 0; j < b.cant; j++){
+        int esta = 0;
+        for(int k = 0; k < a.cant; k++){
+            if(b.arreglo[j] == a.arreglo[k]){
+                esta = 1;
+            }
+        }
+        if( esta == 1 ){
+            result.arreglo[result.cant] = b.arreglo[j];
+            result.cant++;
+        }
+    }
+    return result;
+}
+
 ArregloChar unionArregloChar(ArregloChar a, ArregloChar b){
     ArregloChar result;
     result.cant = 0;

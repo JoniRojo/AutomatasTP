@@ -21,6 +21,8 @@ void eliminarRepetidos(ArregloEnt *arreglo);
 
 ArregloEnt unionArregloEnt(ArregloEnt a, ArregloEnt b);
 
+ArregloEnt interseccionArregloEnt(ArregloEnt a, ArregloEnt b);
+
 ArregloChar unionArregloChar(ArregloChar a, ArregloChar b);
 
 ArregloEnt diferenciaArregloEnt(ArregloEnt a, ArregloEnt b);
