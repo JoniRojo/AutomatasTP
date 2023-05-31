@@ -3,6 +3,7 @@
 
 #include "../automata.h"
 
+/*
 int main(){
     ListChar listaAlfabeto1;
     insertarChar(&listaAlfabeto1, 'z');
@@ -60,3 +61,4 @@ int main(){
     printf("Union automata a1 a2: \n");
     mostrarAutomata(nuevoAutomataUnion);
 }
+ */

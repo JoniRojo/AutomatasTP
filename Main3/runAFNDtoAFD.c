@@ -4,6 +4,7 @@
 #include "../automata.h"
 #include "../linkedlist.h"
 
+/*
 int main(){
 
     ListChar listaAlfabeto;
@@ -41,7 +42,8 @@ int main(){
     anadirTransicion(&a, 5, 'b', 6);
     anadirTransicion(&a, 6, 'z', 1);
 
-    /*
+
+    // Aca va asterisco barra
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'a');
     insertarChar(&listaAlfabeto, 'b');
@@ -69,7 +71,7 @@ int main(){
     anadirTransicion(&a, 2, 'a', 3);
     anadirTransicion(&a, 4, 'b', 5);
 
-    */
+    // Aca va asterisco barra
     mostrarAutomata(a);
 
     Automata aAFD = AFNDtoAFD(a);
@@ -77,3 +79,4 @@ int main(){
     freeDelta(a);
     freeDelta(aAFD);
 }
+*/

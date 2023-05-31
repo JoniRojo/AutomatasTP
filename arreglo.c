@@ -103,3 +103,15 @@ ArregloEnt diferenciaArregloEnt(ArregloEnt a, ArregloEnt b){
     }
     return result;
 }
+
+int igualdadArreglosEnt(ArregloEnt a, ArregloEnt b){
+    if(a.cant != b.cant){
+        return 0;
+    }
+    for(int i = 0; i < a.cant; i++){
+        if(a.arreglo[i] != b.arreglo[i]){
+            return 0;
+        }
+    }
+    return 1;
+}

@@ -2,7 +2,7 @@
 #include <malloc.h>
 
 #include "../automata.h"
-
+/*
 int main(){
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'z');
@@ -33,3 +33,4 @@ int main(){
     printf("Clausura de Klenne del automata a: \n");
     mostrarAutomata(nuevoAutomataClausuraKlenne);
 }
+*/

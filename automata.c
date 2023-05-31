@@ -612,43 +612,48 @@ Automata minimizacionAut(Automata a){
 
     ArregloEnt nuevosEstados;
     nuevosEstados.cant = 0;
-    
-    NodoArr *pListaParticiones = listaParticiones.head;
-    while( pListaParticiones != NULL){
-        nuevosEstados.arreglo[nuevosEstados.cant] = pListaParticiones->arreglo.arreglo[0];
+    NodoArr *pListaParticiones2;
+    pListaParticiones2 = listaParticiones.head;
+    while( pListaParticiones2 != NULL){
+        nuevosEstados.arreglo[nuevosEstados.cant] = pListaParticiones2->arreglo.arreglo[0];
         nuevosEstados.cant++;
-        pListaParticiones = pListaParticiones->next;
+        pListaParticiones2 = pListaParticiones2->next;
     }    
 
     int nuevoEstadoInicial;
-    pListaParticiones = listaParticiones.head;
-    while( pListaParticiones != NULL){
-        for(int h = 0; h < pListaParticiones->arreglo.cant; h++){
-            if(a.estadoInicial == pListaParticiones->arreglo.arreglo[h]){
-                nuevoEstadoInicial = pListaParticiones->arreglo.arreglo[h];
+    pListaParticiones2 = listaParticiones.head;
+    while( pListaParticiones2 != NULL){
+        for(int h = 0; h < pListaParticiones2->arreglo.cant; h++){
+            if(a.estadoInicial == pListaParticiones2->arreglo.arreglo[h]){
+                nuevoEstadoInicial = pListaParticiones2->arreglo.arreglo[h];
             }
         }
-        pListaParticiones = pListaParticiones->next;
+        pListaParticiones2 = pListaParticiones2->next;
     }
 
     ArregloEnt finalesNuevos;
     finalesNuevos.cant = 0;
-    pListaParticiones = listaParticiones.head;
-    while( pListaParticiones != NULL){
-        ArregloEnt interseccionFinalesParticion = interseccionArregloEnt(a.finales,pListaParticiones->arreglo);
+    pListaParticiones2 = listaParticiones.head;
+    while( pListaParticiones2 != NULL){
+        ArregloEnt interseccionFinalesParticion = interseccionArregloEnt(a.finales,pListaParticiones2->arreglo);
         if( interseccionFinalesParticion.cant != 0){
-            finalesNuevos.arreglo[finalesNuevos.cant] = pListaParticiones->arreglo.arreglo[0];
+            finalesNuevos.arreglo[finalesNuevos.cant] = pListaParticiones2->arreglo.arreglo[0];
             finalesNuevos.cant++;
         }
-        pListaParticiones = pListaParticiones->next;
+        pListaParticiones2 = pListaParticiones2->next;
     }
 
     Automata nuevoAut = crearAutomata(nuevoAlfabeto, nuevosEstados, nuevoEstadoInicial, finalesNuevos);
 
-    pListaParticiones = listaParticiones.head;
-    
-
-
+    pListaParticiones2 = listaParticiones.head;
+    while(pListaParticiones2 != NULL){
+        for(int y = 0; y < alfabetoSinLambda.cant; y++){
+            int indiceEstadoRepresentante = indiceEstado(nuevoAut, pListaParticiones2->arreglo.arreglo[0]);
+            anadirTransicion(&nuevoAut, pListaParticiones2->arreglo.arreglo[0], alfabetoSinLambda.arreglo[y],claseEquivalencia.array[indiceEstadoRepresentante].arreglo[y]);
+        }
+        pListaParticiones2 = pListaParticiones2->next;
+    }
+    return nuevoAut;
 }
 
 void refinarClasesEquivalencia(Automata a, ArrayOfArraysEnt *claseEquivalencia, ListOfArraysEnt *listaParticiones){

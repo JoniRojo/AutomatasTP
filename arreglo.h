@@ -27,4 +27,6 @@ ArregloChar unionArregloChar(ArregloChar a, ArregloChar b);
 
 ArregloEnt diferenciaArregloEnt(ArregloEnt a, ArregloEnt b);
 
+int igualdadArreglosEnt(ArregloEnt a, ArregloEnt b);
+
 #endif //TP_ARREGLO_H

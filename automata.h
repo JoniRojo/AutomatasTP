@@ -45,9 +45,11 @@ Automata clausuraKlenneAut(Automata a);
 
 Automata minimizacionAut(Automata a);
 
-void refinarClasesEquivalencia();
+void refinarClasesEquivalencia(Automata a, ArrayOfArraysEnt *claseEquivalencia, ListOfArraysEnt *listaParticiones);
 
 void mostrarAutomata(Automata aut);
+
+int clasesEquivalenciaIguales(Automata a, ArregloEnt particion, ArrayOfArraysEnt clasesEquivalencia);
 
 void freeDelta(Automata aut);
 

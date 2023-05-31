@@ -4,6 +4,7 @@
 #include "archivo.h"
 #include <string.h>
 
+/*
 int main(){
 
     FILE* aux;                                      // Archivo donde meteremos todo el automata
@@ -131,3 +132,4 @@ int main(){
     int n = 3;
     pertenece(a, cad, n); // Imprimimos si la cadena pertenece o no al automata
 }
+*/
