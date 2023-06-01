@@ -44,6 +44,7 @@ int main(){
 
     printf("----------------------------------------------------------------------\n");
     Automata nuevoAutomataMinimizado = minimizacionAut(a);
+    // 1 = a, 0 = b
     printf("Minimizacion del automata: \n");
     mostrarAutomata(nuevoAutomataMinimizado);
 }
