@@ -4,6 +4,8 @@
 #include "../automata.h"
 /*
 int main(){
+    // Ejemplo del libro
+
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'z');
     insertarChar(&listaAlfabeto, 'a');

@@ -42,12 +42,5 @@ int esRepetido(ListEnt A, int elem);
 void freeListEnt(ListEnt A);
 void freeListChar(ListChar A);
 void freeListOfArraysEnt(ListOfArraysEnt A);
-//int sizeListOfArraysEnt(ListOfArraysEnt list);
-/*
-void crear(Nodo **list);
-void insertarCab(Nodo **list, int info);
-int esVacia(Nodo *list);
-void suprimirCab(Nodo **list);
-void listar(Nodo *list);
-*/
+
 #endif //TP_LINKEDLIST_H

@@ -1,15 +1,6 @@
-//
-// Created by ignacio on 09/05/23.
-//
-
-//
-// Created by ignacio on 09/05/23.
-//
-
 #include <stdio.h>
 #include <string.h>
 #include "archivo.h"
-
 
 int existe(char estadosRep[20],char i,int cant){
     for(int j = 0; j < cant; j++){ // Ciclamos el arreglo de los estados

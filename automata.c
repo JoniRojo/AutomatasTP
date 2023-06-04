@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -222,12 +221,6 @@ void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt list
     //free(pAlista2);
 }
 
-/*
- * 4 1000
- * 3 100
- * 2 10
- * 1 1
- */
 int nuevoNombreEstado(ArregloEnt conjuntoNuevo){
     int nuevoNum = 0;
     int n = conjuntoNuevo.cant;
@@ -260,19 +253,6 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
         NodoEnt *aux = aut.delta[indiceEst][indiceLambda].head;
         if(aux != NULL){
             while( aux != NULL){
-                /*
-                NodoEnt *new_node = (NodoEnt *)malloc(sizeof(NodoEnt));
-                new_node->info = aux->info;
-                new_node->next = NULL;
-
-                if (result.head == NULL) {
-                    result.head  = new_node;
-                } else {
-                    NodoEnt *aux2 = result.head;
-                    result.head = new_node;
-                    result.head->next = aux2;
-                }
-                */
                 // chequear si por otro lambda llego a otro estado
                 // calculo la clausera lambda del estado anterior que agrego a result
                 // si encuentro algo, lo inserto en result
@@ -287,7 +267,6 @@ ListEnt clausuraLambda(Automata aut, ArregloEnt estados){
                     //insertarEnt(&result, aux4.arreglo[j]);
                     insertarEnt(&result,aux4.arreglo[j]);
                 }
-
                 aux = aux->next;
             }
         }
@@ -335,7 +314,6 @@ ListEnt mover(Automata aut, ArregloEnt estados, char simbolo){
             }
         }
     }
-
     //elimino posibles estados repetidos
     //ArregloEnt arregloARetornar = listEntToArray(&result);
     //eliminarRepetidos(&arregloARetornar);
@@ -563,8 +541,7 @@ Automata minimizacionAut(Automata a){
     insertarArr(&listaParticiones, a.finales);
     ArrayOfArraysEnt claseEquivalencia;
     claseEquivalencia.cant = 0;
-    // int representanteEstadosNoFinales = estadosNoFinales.arreglo[0];
-    // int representanteFinales = a.finales.arreglo[0];
+
     ListChar alfabetoSinLambdaL;
     for(int g = 0; g < a.simbolos.cant; g++){
         if(a.simbolos.arreglo[g] != 'z'){
@@ -601,13 +578,8 @@ Automata minimizacionAut(Automata a){
         }
     }
     refinarClasesEquivalencia(a, &claseEquivalencia, &listaParticiones);
-    // Construir el nuevo automata
-    /*ArregloEnt estados;       // Estados son numeros
-    ArregloChar simbolos;     // Simbolos del alfabeto son caracteres
-    ListEnt delta[MAX][MAX];   // Filas son estados, columnas son simbolos, cada elemento de la matriz es una lista
-    ArregloEnt finales;
-    int estadoInicial;*/
 
+    // Construir el nuevo automata
     ArregloChar nuevoAlfabeto;
     nuevoAlfabeto.cant = 0;
     nuevoAlfabeto = a.simbolos;
