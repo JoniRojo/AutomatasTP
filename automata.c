@@ -734,13 +734,13 @@ void freeDelta(Automata aut){
 void mostrarAutomata(Automata aut){
     printf("Su alfabeto es: [");
     for(int j = 0; j < aut.simbolos.cant; j++){
-        printf("%c ",aut.simbolos.arreglo[j]);
+        printf(" %c ",aut.simbolos.arreglo[j]);
     }
     printf("] \n");
 
     printf("Sus estados son: [");
     for(int j = 0; j < aut.estados.cant; j++){
-        printf("%d ",aut.estados.arreglo[j]);
+        printf(" %d ",aut.estados.arreglo[j]);
     }
     printf("] \n");
 
@@ -748,20 +748,20 @@ void mostrarAutomata(Automata aut){
 
     printf("Sus estados finales son: [");
     for (int j = 0; j < aut.finales.cant; j++){
-        printf("%d", aut.finales.arreglo[j]);
+        printf(" %d ", aut.finales.arreglo[j]);
     }
     printf("] \n");
 
     printf("Transiciones: \n");
     for (int i = 0; i < aut.estados.cant; i++) {
         for (int j = 0; j < aut.simbolos.cant; j++) {
-            printf("[%d][%c]: ", aut.estados.arreglo[i], aut.simbolos.arreglo[j]);
+            printf("[%d][%c]:", aut.estados.arreglo[i], aut.simbolos.arreglo[j]);
             NodoEnt *aux = aut.delta[i][j].head;
             if(aux == NULL){
                 printf("Lista vacia\n");
             }else{
                 while(aux != NULL){
-                    printf("%i ",aux->info);
+                    printf(" %i ",aux->info);
                     aux= aux->next;
                 }
                 printf("\n");
