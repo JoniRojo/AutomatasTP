@@ -4,6 +4,8 @@
 #include "../automata.h"
 
 int main(){
+    // Ejemplo del libro
+
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'z');
     insertarChar(&listaAlfabeto, 'a');
@@ -44,6 +46,7 @@ int main(){
 
     printf("----------------------------------------------------------------------\n");
     Automata nuevoAutomataMinimizado = minimizacionAut(a);
+    // 1 = a, 0 = b
     printf("Minimizacion del automata: \n");
     mostrarAutomata(nuevoAutomataMinimizado);
 }

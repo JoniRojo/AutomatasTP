@@ -1,7 +1,3 @@
-//
-// Created by ignacio on 09/05/23.
-//
-
 #ifndef UNTITLED_ARCHIVO_H
 #define UNTITLED_ARCHIVO_H
 

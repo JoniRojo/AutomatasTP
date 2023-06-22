@@ -5,6 +5,8 @@
 
 /*
 int main(){
+    // Ejemplo del libro
+
     ListChar listaAlfabeto1;
     insertarChar(&listaAlfabeto1, 'z');
     insertarChar(&listaAlfabeto1, 'a');
