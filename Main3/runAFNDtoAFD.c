@@ -6,8 +6,8 @@
 
 /*
 int main(){
-
     // Automata ejemplo del libro
+    
     ListChar listaAlfabeto;
     insertarChar(&listaAlfabeto, 'z');
     insertarChar(&listaAlfabeto, 'a');
