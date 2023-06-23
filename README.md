@@ -26,7 +26,7 @@ Main's (Aclaraciones importantes en Main 3 y 10):
   Puede modificar el archivo "origin.txt" y luego correr el main, y ver los cambios en el "aut.txt".
 
 
-  - Main3 - AFNDtoAFD: Se utiliza el AFND del ejemplo del libro, se ejecuta la funcion AFNDtoAFD y se imprime por consolta el nuevo automata.
+  - Main3 - AFNDtoAFD: Se utiliza el AFND del ejemplo del libro, se ejecuta la funcion AFNDtoAFD y se imprime por consolta el nuevo automata. Actualmente, este algoritmo no termina de funcionar bien, sin embargo, tanto la funcion de clasuraLambda y mover funcionan correctamente, el algoritmo logra crear los primeros conjuntos nuevos e incluso, en la primer llamada a cicloNuevosConjuntos tambien los crea(en ambos casos con sus tranciones correspondiente en el nuevo automata). Falla a la hora de realizar la primera llamada recursiva dentro de cicloNuevosConjuntos, por lo demas, si se debugea, se puede observar que funciona correctamente. En las proximas horas se intentará arreglar este último problema...
 
 
   - Main4 - UNION: Utilizamos el ejemplo de libro y creamos ambos automatas, se los muestra por consola para diferenciarlos y luego, utilizamos la funcion de union de automatas y mostramos en consola dicha union.
