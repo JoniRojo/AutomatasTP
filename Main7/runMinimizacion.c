@@ -2,7 +2,7 @@
 #include <malloc.h>
 
 #include "../automata.h"
-
+/*
 int main(){
     // Ejemplo del libro
 
@@ -50,3 +50,4 @@ int main(){
     printf("Minimizacion del automata: \n");
     mostrarAutomata(nuevoAutomataMinimizado);
 }
+*/

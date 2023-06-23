@@ -62,9 +62,9 @@ void pertenece(Automata aut, char cadena[], int n){
         }
     }
     if(aceptada == 1){
-        printf("Cadena aceptada por el automata");
+        printf("Cadena aceptada por el automata\n");
     }else{
-        printf("Cadena no aceptada por el automata");
+        printf("Cadena no aceptada por el automata\n");
     }
 }
 
@@ -75,6 +75,14 @@ int ir(Automata aut, int aux, char c){
 }
 
 Automata AFNDtoAFD(Automata aut){
+    // Clasura lambda del estado incial = X
+    // Del conjunto obtenido X , realizar mover(X, cada simbolo)
+    // Para cada conjunto, realizar clausura lambda, estos seran mis primeros conjuntos.
+    // Luego, de esos conjuntos realizo el mover por cada simbolo y su claura lambda,
+    // si obtengo algun conjunto nuevo que no este contenido en uno anterior, sera un nuevo conjunto
+    // Esto se repite hasta que no surgan nuevos conjuntos...
+    // Luego X sera el estado inicial, y los finales seran aquellos que contienen a un estado final.
+
     Automata nuevoAut;
     nuevoAut.simbolos = aut.simbolos;
 

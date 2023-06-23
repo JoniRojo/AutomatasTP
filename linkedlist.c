@@ -89,7 +89,6 @@ ArregloChar listCharToArray(ListChar *list){
         }
         return array;
     }
-    //aca
 }
 
 int contenido(ListEnt A, ListEnt B){

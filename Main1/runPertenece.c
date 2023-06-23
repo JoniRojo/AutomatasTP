@@ -50,5 +50,4 @@ int main(){
     int n = 3;
     pertenece(a, cadena, n);
 }
-
 */

@@ -6,8 +6,8 @@
 #include "arreglo.h"
 
 typedef struct Automata{
-    ArregloEnt estados;       // Estados son numeros
-    ArregloChar simbolos;     // Simbolos del alfabeto son caracteres
+    ArregloEnt estados;      
+    ArregloChar simbolos;
     ListEnt delta[MAX][MAX];   // Filas son estados, columnas son simbolos, cada elemento de la matriz es una lista
     ArregloEnt finales;
     int estadoInicial;
