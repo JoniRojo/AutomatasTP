@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #define MAX3 20
-
+/*
 typedef struct NodoChar{
     char info;
     struct NodoChar *next;
@@ -20,21 +20,21 @@ void insertarChaR(ListChar *list, char c);
 
 void avanzar(int *indiceCC);
 
-int perteneceSD(ListChar list, char cadena[], int indiceCC);
+int perteneceSD(ListChar list, char ER[], int indiceCC);
 
-void produccionS(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionE(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionEP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionT(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionTP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionF(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionFP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
-void produccionL(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC);
+void produccionS(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionE(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionEP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionT(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionTP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionF(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionFP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
+void produccionL(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC);
 
 int main(){
     int indiceCC = 0;
-    char cadena[20] = "a.b|c*#";
+    char ER[20] = "a.b|c*#";
     int bool = 1;
 
     ArrayOfListChar producciones;
@@ -44,22 +44,23 @@ int main(){
         producciones.array[i].head = NULL;
     }
 
-    /* Las produccion enumeradas en el arreglo de listas:
-    0- S → E #
-    1- E → T E'
-    2- E' → | T E'
-    3- E' → Lambda
-    4- T → F T'
-    5- T' → . F T'
-    6- T' → Lambda
-    7- F → P F'
-    8- F' → *
-    9- F' → Lambda
-    10- P → ( E )
-    11- P → L
-    12- L → a
-    13- L → b
-    14- L → c */
+    //Las produccion enumeradas en el arreglo de listas:
+    //0- S → E #
+    //1- E → T E'
+    //2- E' → | T E'
+    //3- E' → Lambda
+    //4- T → F T'
+    //5- T' → . F T'
+    //6- T' → Lambda
+    //7- F → P F'
+    //8- F' → *
+    //9- F' → Lambda
+    //10- P → ( E )
+    //11- P → L
+    //12- L → a
+    //13- L → b
+    //14- L → c
+
 
     insertarChaR(&producciones.array[0], '(');
     insertarChaR(&producciones.array[0], 'a');
@@ -127,12 +128,12 @@ int main(){
     insertarChaR(&producciones.array[14], 'c');
     producciones.cant++;
 
-    produccionS(producciones, &bool, cadena, &indiceCC);
+    produccionS(producciones, &bool, ER, &indiceCC);
 
     if(bool == 1){
-        printf("La cadena es aceptada");
+        printf("La expresion regular %s es reconocida \n", ER);
     } else {
-        printf("La cadena no es aceptada");
+        printf("La expresion regular %s no es reconocida \n", ER);
     }
 }
 
@@ -150,15 +151,14 @@ void insertarChaR(ListChar *list, char c){
     }
 }
 
-// Accion para que el elemento corriente avanze en la cadena
 void avanzar(int *indiceCC){
     *indiceCC = *indiceCC + 1;
 }
 
-int perteneceSD(ListChar list, char cadena[], int indiceCC){
+int perteneceSD(ListChar list, char ER[], int indiceCC){
     NodoChar *aux = list.head;
     while(aux != NULL){
-        if(aux->info == cadena[indiceCC]){
+        if(aux->info == ER[indiceCC]){
             return 1;
         }
         aux = aux->next;
@@ -166,10 +166,10 @@ int perteneceSD(ListChar list, char cadena[], int indiceCC){
     return 0;
 }
 
-void produccionS(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
-    if(perteneceSD(producciones.array[0], cadena, *indiceCC) == 1){
-        produccionE(producciones, bool, cadena, indiceCC);
-        if(cadena[*indiceCC] == '#'){
+void produccionS(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
+    if(perteneceSD(producciones.array[0], ER, *indiceCC) == 1){
+        produccionE(producciones, bool, ER, indiceCC);
+        if(ER[*indiceCC] == '#'){
             *bool = 1;
         } else{
             *bool = 0;
@@ -179,28 +179,28 @@ void produccionS(ArrayOfListChar producciones, int *bool, char cadena[], int *in
     }
 }
 
-void produccionE(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionE(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if(*bool == 1){
-        if(perteneceSD(producciones.array[1], cadena, *indiceCC) == 1){
-            produccionT(producciones, bool, cadena, indiceCC);
-            produccionEP(producciones, bool, cadena, indiceCC);
+        if(perteneceSD(producciones.array[1], ER, *indiceCC) == 1){
+            produccionT(producciones, bool, ER, indiceCC);
+            produccionEP(producciones, bool, ER, indiceCC);
         } else {
             *bool = 0;
         }
     }
 }
 
-void produccionEP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionEP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if(*bool == 1){
-        if(perteneceSD(producciones.array[2], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == '|'){
+        if(perteneceSD(producciones.array[2], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == '|'){
                 avanzar(indiceCC);
             } else{
                 *bool = 0;
             }
-            produccionT(producciones, bool, cadena, indiceCC);
-            produccionEP(producciones, bool, cadena, indiceCC);
-        } else if(perteneceSD(producciones.array[3], cadena, *indiceCC) == 1){
+            produccionT(producciones, bool, ER, indiceCC);
+            produccionEP(producciones, bool, ER, indiceCC);
+        } else if(perteneceSD(producciones.array[3], ER, *indiceCC) == 1){
            //skip
         } else {
             *bool = 0;
@@ -208,28 +208,28 @@ void produccionEP(ArrayOfListChar producciones, int *bool, char cadena[], int *i
     }
 }
 
-void produccionT(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionT(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if( *bool == 1){
-        if(perteneceSD(producciones.array[4], cadena, *indiceCC) == 1){
-            produccionF(producciones, bool, cadena, indiceCC);
-            produccionTP(producciones, bool, cadena, indiceCC);
+        if(perteneceSD(producciones.array[4], ER, *indiceCC) == 1){
+            produccionF(producciones, bool, ER, indiceCC);
+            produccionTP(producciones, bool, ER, indiceCC);
         } else {
             *bool = 0;
         }
     }
 }
 
-void produccionTP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionTP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if (*bool == 1){
-        if(perteneceSD(producciones.array[5], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == '.'){
+        if(perteneceSD(producciones.array[5], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == '.'){
                 avanzar(indiceCC);
             } else{
                 *bool = 0;
             }
-            produccionF(producciones, bool, cadena, indiceCC);
-            produccionTP(producciones, bool, cadena, indiceCC);
-        } else if(perteneceSD(producciones.array[6], cadena, *indiceCC) == 1){
+            produccionF(producciones, bool, ER, indiceCC);
+            produccionTP(producciones, bool, ER, indiceCC);
+        } else if(perteneceSD(producciones.array[6], ER, *indiceCC) == 1){
             //skip
         } else{
             *bool = 0;
@@ -237,26 +237,26 @@ void produccionTP(ArrayOfListChar producciones, int *bool, char cadena[], int *i
     }
 }
 
-void produccionF(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionF(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if( *bool == 1){
-        if(perteneceSD(producciones.array[7], cadena, *indiceCC) == 1){
-            produccionP(producciones, bool, cadena, indiceCC);
-            produccionFP(producciones, bool, cadena, indiceCC);
+        if(perteneceSD(producciones.array[7], ER, *indiceCC) == 1){
+            produccionP(producciones, bool, ER, indiceCC);
+            produccionFP(producciones, bool, ER, indiceCC);
         } else {
             *bool = 0;
         }
     }
 }
 
-void produccionFP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionFP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if(*bool == 1){
-        if(perteneceSD(producciones.array[8], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == '*'){
+        if(perteneceSD(producciones.array[8], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == '*'){
                 avanzar(indiceCC);
             } else {
                 *bool = 0;
             }
-        } else if(perteneceSD(producciones.array[9], cadena, *indiceCC) == 1){
+        } else if(perteneceSD(producciones.array[9], ER, *indiceCC) == 1){
             //skip
         } else{
             *bool = 0;
@@ -264,44 +264,44 @@ void produccionFP(ArrayOfListChar producciones, int *bool, char cadena[], int *i
     }
 }
 
-void produccionP(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionP(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if(*bool == 1){
-        if(perteneceSD(producciones.array[10], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == '('){
+        if(perteneceSD(producciones.array[10], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == '('){
                 avanzar(indiceCC);
             } else {
                 *bool = 0;
             }
-            produccionE(producciones, bool, cadena, indiceCC);
-            if(cadena[*indiceCC] == ')'){
+            produccionE(producciones, bool, ER, indiceCC);
+            if(ER[*indiceCC] == ')'){
                 avanzar(indiceCC);
             } else {
                 *bool = 0;
             }
-        } else if(perteneceSD(producciones.array[11], cadena, *indiceCC) == 1){
-            produccionL(producciones, bool, cadena, indiceCC);
+        } else if(perteneceSD(producciones.array[11], ER, *indiceCC) == 1){
+            produccionL(producciones, bool, ER, indiceCC);
         } else {
             *bool = 0;
         }
     }
 }
 
-void produccionL(ArrayOfListChar producciones, int *bool, char cadena[], int *indiceCC){
+void produccionL(ArrayOfListChar producciones, int *bool, char ER[], int *indiceCC){
     if(*bool == 1){
-        if(perteneceSD(producciones.array[12], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == 'a'){
+        if(perteneceSD(producciones.array[12], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == 'a'){
                 avanzar(indiceCC);
             } else {
                 *bool = 0;
             }
-        } else if(perteneceSD(producciones.array[13], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == 'b') {
+        } else if(perteneceSD(producciones.array[13], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == 'b') {
                 avanzar(indiceCC);
             } else{
                 *bool = 0;
             }
-        } else if(perteneceSD(producciones.array[14], cadena, *indiceCC) == 1){
-            if(cadena[*indiceCC] == 'c'){
+        } else if(perteneceSD(producciones.array[14], ER, *indiceCC) == 1){
+            if(ER[*indiceCC] == 'c'){
                 avanzar(indiceCC);
             } else {
                 *bool = 0;
@@ -311,3 +311,4 @@ void produccionL(ArrayOfListChar producciones, int *bool, char cadena[], int *in
         }
     }
 }
+*/
