@@ -181,6 +181,7 @@ void cicloNuevosConjuntos(Automata aut, Automata *nuevoAut, ListOfArraysEnt list
     NodoArr *pAlistaEstadosAIterar = listaEstadosAIterar.head;
     NodoArr *pAlistaEstadosResultado = listaEstadosResultado->head;
     ListOfArraysEnt listaEstadosNuevosAIterar;
+    listaEstadosNuevosAIterar.head = NULL;
     while( pAlistaEstadosAIterar != NULL){  // Mientras tenga conjuntos a iterar
         for(int i = 0; i < alfabetoSinLambda.cant; i++){    // por cada simbolo del alfabeto
             // calculo clausuraLambda(mover())
